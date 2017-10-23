@@ -1,0 +1,27 @@
+{
+  "name": "phaser-sp-test",
+  "version": "1.0.0",
+  "description": "Single player phaser game test",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjohns1/phaser-sp-test.git"
+  },
+  "author": "Ben Johns",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjohns1/phaser-sp-test/issues"
+  },
+  "homepage": "https://github.com/benjohns1/phaser-sp-test#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "phaser": "^2.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
