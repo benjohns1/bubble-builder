@@ -25,5 +25,18 @@
 <script src="/states/SplashState.js"></script>
 <script src="/states/MenuState.js"></script>
 <script src="/states/GameState.js"></script>
-<script src="/app.js"></script>
+<script src="/game/Player.js"></script>
+<script src="/game/Food.js"></script>
+<script>
+    window.PhaserGlobal = {
+        hideBanner: true
+    };
+    window.game = new Phaser.Game({
+        width: window.innerWidth,
+        height: window.innerHeight, 
+        renderer: Phaser.AUTO,
+        parent: 'content',
+        state: BootState
+    });
+</script>
 </html>

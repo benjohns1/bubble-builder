@@ -1,7 +1,23 @@
 class SplashState extends Phaser.State {
 
     preload() {
+        this.showLoadingBar();
 
+        // Load game assets
+
+        this.generateGraphics();
+    }
+
+    create() {
+        if (this.game.config.enableDebug) {
+            this.state.start('Game');
+        } else {
+            this.state.start('Menu');
+        }
+    }
+
+    showLoadingBar() {
+        
         const barBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loadingBarBg');
         barBg.anchor.setTo(0.5);
 
@@ -18,24 +34,18 @@ class SplashState extends Phaser.State {
         text.anchor.setTo(0.5, 1.0);
         
         this.load.setPreloadSprite(bar);
-
-        this.generateGraphics();
-    }
-
-    create() {
-        this.state.start('Menu');
     }
 
     generateGraphics() {
-        const button = this.game.add.graphics();
+        const rectangle = this.game.add.graphics();
         const width = 128, height = 48;
         
-        button.beginFill(0x3366ff);
-        button.drawRect(0, 0, width, height);
-        button.endFill();
+        rectangle.beginFill(0x3366ff);
+        rectangle.drawRect(0, 0, width, height);
+        rectangle.endFill();
 
-        this.game.cache.addImage('button', null, button.generateTexture().baseTexture.source);
+        this.game.cache.addImage('rectangle', null, rectangle.generateTexture().baseTexture.source);
         
-        button.destroy();
+        rectangle.destroy();
     }
 }

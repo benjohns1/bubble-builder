@@ -14,7 +14,7 @@ class MenuState extends Phaser.State {
             smoothed: false,
         };
 
-        const sprite = this.game.add.button(this.world.centerX, this.world.centerY + 20, 'button', function() {
+        const sprite = this.game.add.button(this.world.centerX, this.world.centerY + 20, 'rectangle', function() {
             this.state.start('Game');
         }, this);
         sprite.anchor.setTo(0.5);

@@ -2,6 +2,8 @@ class BootState extends Phaser.State {
 
     init() {
         this.loaded = false;
+
+        this.game.config.enableDebug = true;
         
         this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         
