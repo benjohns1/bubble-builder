@@ -4,8 +4,12 @@ class GameState extends Phaser.State {
         super();
         this.width = 5000;
         this.height = 5000;
-        this.foodCount = 200;
-        this.food = [];
+        this.floaterCounts = {
+            green: 150,
+            red: 50,
+            purple: 20
+        };
+        this.floaters = {};
         this.debug = false;
     }
 
@@ -29,13 +33,41 @@ class GameState extends Phaser.State {
         // Player
         this.player = new Player(this, center.x, center.y);
 
-        // Create food
-        for (let i = 0; i < this.foodCount; i++) {
-            let food = new Food(this.game);
-            this.food[food.id] = food;
-        }
+        // Create floating resources
+        this.createFloaters();
 
         // Camera
         this.game.camera.follow(this.player.player);
+    }
+
+    createFloaters() {
+        for (let i = 0; i < this.floaterCounts.green; i++) {
+            let floater = new StaticFloater_Green(this.game);
+            this.floaters[floater.id] = floater;
+        }
+        for (let i = 0; i < this.floaterCounts.red; i++) {
+            let floater = new StaticFloater_Red(this.game);
+            this.floaters[floater.id] = floater;
+        }
+        for (let i = 0; i < this.floaterCounts.purple; i++) {
+            let floater = new StaticFloater_Purple(this.game);
+            this.floaters[floater.id] = floater;
+        }
+    }
+
+    floaterFactory(className) {
+        const classes = {
+            StaticFloater_Green,
+            StaticFloater_Red,
+            StaticFloater_Purple
+        }
+        return new classes[className](this.game);
+    }
+
+    removeFloater(floaterId) {
+        let className = this.floaters[floaterId].constructor.name;
+        delete this.floaters[floaterId];
+        let newFloater = this.floaterFactory(className);
+        this.floaters[newFloater.id] = newFloater;
     }
 }

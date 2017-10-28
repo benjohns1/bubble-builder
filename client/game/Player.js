@@ -2,11 +2,10 @@ class Player extends Phaser.Group {
     
     constructor(gameState, x, y, debug) {
         super(gameState.game);
-        this.game = gameState.game;
         this.gameState = gameState;
         this.debug = false;
-        this.color = 0x6f0fc4;
-        this.outlineColor = 0x1e0435;
+        this.color = 0x3916a0;
+        this.outlineColor = 0x51efe7;
         this.startingPoint = {
             x: x,
             y: y
@@ -14,8 +13,13 @@ class Player extends Phaser.Group {
         this.radius = 50;
         this.speed = 100;
         this.damping = 0.5;
-        this.energy = 100;
-        this.lastEnergyThreshold = this.energy;
+        this.resource = {
+            energy: this.radius,
+            green: 0,
+            red: 0,
+            purple: 0
+        };
+        this.lastEnergyThreshold = this.resource.energy;
 
         // Input bindings
         this.wasdKeys = this.game.input.keyboard.addKeys({
@@ -40,25 +44,37 @@ class Player extends Phaser.Group {
             return;
         }
 
-        // Check for food collision
-        this.foodCollisionHandler(body);
+        // Check for floater collision
+        this.floaterCollisionHandler(body);
     }
 
-    foodCollisionHandler(body) {
-        if (!this.gameState.food[body.data.id]) {
+    addResource(fromEntity, type) {
+        
+        if (!fromEntity.resource[type]) {
+            return false;
+        }
+        this.resource[type] += fromEntity.resource[type];
+        return true;
+    }
+
+    floaterCollisionHandler(body) {
+        if (!this.gameState.floaters[body.data.id]) {
             return false;
         }
 
-        let food = this.gameState.food[body.data.id];
-        if (food.radius < this.radius) {
-            this.energy += food.energy;
+        let floater = this.gameState.floaters[body.data.id];
+        if (floater.radius < this.radius) {
+            this.addResource(floater, 'energy');
+            this.addResource(floater, 'green');
+            this.addResource(floater, 'red');
+            this.addResource(floater, 'purple');
     
-            // Destroy food
-            delete this.gameState.food[food.id];
-            food.destroy();
-            food = null;
+            // Destroy floater
+            this.gameState.removeFloater(floater.id);
+            floater.destroy();
+            floater = null;
 
-            console.log('energy: ' + this.energy);
+            console.log('player resources: ', this.resource);
         }
     }
 
@@ -102,17 +118,17 @@ class Player extends Phaser.Group {
 
     update() {
         // Check if grow/shrink threshold has been crossed
-        if (this.energy >= this.lastEnergyThreshold * 2) {
+        if (this.resource.energy >= this.lastEnergyThreshold * 2) {
             this.changeSize(1.25);
             this.lastEnergyThreshold *= 2;
         }
-        else if (this.energy < this.lastEnergyThreshold / 2) {
+        else if (this.resource.energy < this.lastEnergyThreshold / 2) {
             this.changeSize(0.8);
             this.lastEnergyThreshold /= 2;
         }
 
         // Check if energy is close to 0
-        if (this.energy < 1) {
+        if (this.resource.energy < 1) {
             console.log('game over');
         }
         

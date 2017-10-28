@@ -1,25 +1,25 @@
-class Food extends Phaser.Group {
+class StaticFloater extends Phaser.Group {
     
-    constructor(game) {
+    constructor(game, color, minRadius, maxRadius) {
         super(game);
         this.debug = false;
-        this.color = 0x0fc487;
+        this.color = color;
         this.damping = 0.5;
         this.startingPoint = {
             x: game.math.between(0, this.game.world.width),
             y: game.math.between(0, this.game.world.height)
         };
-        this.radius = game.math.between(10, 100);
-        this.energy = this.radius;
+        this.radius = game.math.between(minRadius, maxRadius);
+        this.resource = {};
         
-        // Food
-        this.food = this.createGraphics(this.startingPoint.x, this.startingPoint.y, this.radius);
+        // Floater
+        this.floater = this.createGraphics(this.startingPoint.x, this.startingPoint.y, this.radius);
     }
 
     createGraphics(x, y, radius) {
 
-        // Draw player
-        const g = this.game.add.graphics(x, y, );
+        // Draw floater
+        const g = this.game.add.graphics(x, y);
         g.beginFill(this.color);
         g.drawCircle(0, 0, radius * 2);
         g.endFill();
