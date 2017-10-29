@@ -11,9 +11,19 @@ class GameState extends Phaser.State {
         };
         this.floaters = {};
         this.debug = false;
+
+        this.groups = {};
+        this.prefabs = {};
+    }
+
+    init(assetData) {
+        this.assetData = assetData;
     }
 
     create() {
+        this.groups = {};
+
+        // Get center of screen and setup world bounds
         const center = { x: this.game.width / 2, y: this.game.height / 2 };
         this.game.world.setBounds(0, 0, this.width, this.height);
 
@@ -35,6 +45,9 @@ class GameState extends Phaser.State {
 
         // Create floating resources
         this.createFloaters();
+        
+        // Initialize the HUD plugin
+        this.hud = this.game.plugins.add(HUD, this, this.assetData.hud);
 
         // Camera
         this.game.camera.follow(this.player.player);
@@ -53,6 +66,16 @@ class GameState extends Phaser.State {
             let floater = new StaticFloater_Purple(this.game);
             this.floaters[floater.id] = floater;
         }
+    }
+
+    prefabFactory(prefabType, name, x, y, properties) {
+        const prefabs = {
+            StatText,
+        };
+        if (!prefabs.hasOwnProperty(prefabType)) {
+            throw new Exception("No prefab found with type: " + prefabType);
+        }
+        return new prefabs[prefabType](this, name, x, y, properties);
     }
 
     floaterFactory(className) {

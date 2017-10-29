@@ -1,0 +1,44 @@
+{
+    "margins": {
+        "left": 20,
+        "right": 20,
+        "top": 20,
+        "bottom": 20
+    },
+    "elements": {
+        "bottomLeft": {
+            "energy": {
+                "prefabType": "StatText",
+                "properties": {
+                    "group": "hud",
+                    "stat": [ "player", "resource", "energy" ],
+                    "label": "Energy: "
+                }
+            },
+            "green": {
+                "prefabType": "StatText",
+                "properties": {
+                    "group": "hud",
+                    "stat": [ "player", "resource", "green" ],
+                    "label": "Green: "
+                }
+            },
+            "red": {
+                "prefabType": "StatText",
+                "properties": {
+                    "group": "hud",
+                    "stat": [ "player", "resource", "red" ],
+                    "label": "Red: "
+                }
+            },
+            "purple": {
+                "prefabType": "StatText",
+                "properties": {
+                    "group": "hud",
+                    "stat": [ "player", "resource", "purple" ],
+                    "label": "Purple: "
+                }
+            }
+        }
+    }
+}

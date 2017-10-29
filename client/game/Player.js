@@ -73,8 +73,6 @@ class Player extends Phaser.Group {
             this.gameState.removeFloater(floater.id);
             floater.destroy();
             floater = null;
-
-            console.log('player resources: ', this.resource);
         }
     }
 

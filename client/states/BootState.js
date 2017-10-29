@@ -1,9 +1,13 @@
 class BootState extends Phaser.State {
 
-    init() {
-        this.loaded = false;
+    init(assetFiles, startState) {
 
         this.game.config.enableDebug = true;
+        
+        this.assetFiles = assetFiles || {
+            "hud": "./assets/hud.json"
+        };
+        this.startState = startState || (this.game.config.enableDebug ? "Game" : "Menu");
         
         this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         
@@ -15,9 +19,18 @@ class BootState extends Phaser.State {
     preload() {
         this.load.image('loadingBarBg', './assets/images/loading-bar-bg.png');
         this.load.image('loadingBar', './assets/images/loading-bar.png');
+
+        // Load raw JSON asset file data
+        for (let [key, filename] of Object.entries(this.assetFiles)) {
+            this.load.text(key, filename);
+        }
     }
 
     create() {
-        this.state.start('Splash');
+        const rawJsonAssetText = {};
+        for (let key of Object.keys(this.assetFiles)) {
+            rawJsonAssetText[key] = this.game.cache.getText(key);
+        }
+        this.state.start('Splash', true, false, rawJsonAssetText, this.startState);
     }
 }

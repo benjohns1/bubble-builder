@@ -1,19 +1,35 @@
 class SplashState extends Phaser.State {
 
+    init(rawJsonAssetText, startState) {
+        this.rawJsonAssetText = rawJsonAssetText;
+        this.startState = startState;
+        this.assetData = {};
+    }
+
     preload() {
         this.showLoadingBar();
+        
+        // Load JSON configured asset data
+        for (let [key, rawJsonText] of Object.entries(this.rawJsonAssetText)) {
+            this.loadJsonAsset(key, rawJsonText);
+        }
 
-        // Load game assets
+        this.load.image('empty', './assets/images/empty.png');
 
+        // Load dynamic asset data
         this.generateGraphics();
     }
 
     create() {
-        if (this.game.config.enableDebug) {
-            this.state.start('Game');
-        } else {
-            this.state.start('Menu');
-        }
+        this.state.start(this.startState, true, false, this.assetData);
+    }
+
+    loadJsonAsset(key, rawJsonText) {
+        // Load JSON config file
+        this.assetData[key] = JSON.parse(rawJsonText);
+
+        // Loop through 'asset' property in config and load assets based on type
+        // @TODO
     }
 
     showLoadingBar() {

@@ -17,10 +17,8 @@
 </head>
 
 <body>
-    <div id="content">
-    </div>
-</body>
 <script src="/lib/phaser.js"></script>
+<script src="/system/Exception.js"></script>
 <script src="/states/BootState.js"></script>
 <script src="/states/SplashState.js"></script>
 <script src="/states/MenuState.js"></script>
@@ -30,6 +28,9 @@
 <script src="/game/StaticFloater_Green.js"></script>
 <script src="/game/StaticFloater_Red.js"></script>
 <script src="/game/StaticFloater_Purple.js"></script>
+<script src="/plugins/HUD.js"></script>
+<script src="/prefabs/Prefab.js"></script>
+<script src="/prefabs/StatText.js"></script>
 <script>
     window.PhaserGlobal = {
         hideBanner: true
@@ -42,4 +43,5 @@
         state: BootState
     });
 </script>
+</body>
 </html>
