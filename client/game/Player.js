@@ -10,7 +10,7 @@ class Player extends Phaser.Group {
             x: x,
             y: y
         };
-        this.radius = 50;
+        this.radius = 10;
         this.speed = 100;
         this.damping = 0.5;
         this.resource = {
@@ -80,7 +80,7 @@ class Player extends Phaser.Group {
 
         // Draw player
         const player = this.game.add.graphics(x, y);
-        player.lineStyle(2, this.outlineColor, 0.7);
+        player.lineStyle(2, this.outlineColor);
         player.beginFill(this.color);
         player.drawCircle(0, 0, radius * 2);
         player.endFill();
