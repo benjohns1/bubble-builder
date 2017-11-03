@@ -11,7 +11,7 @@
                 "prefabType": "StatText",
                 "properties": {
                     "group": "hud",
-                    "stat": [ "player", "resource", "energy" ],
+                    "stat": [ "player", "displayEnergyThreshold" ],
                     "label": "Energy: "
                 }
             },

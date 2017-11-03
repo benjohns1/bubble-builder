@@ -4,16 +4,10 @@ class GameState extends Phaser.State {
         super();
         this.width = 5000;
         this.height = 5000;
-        this.floaterCounts = {
-            green: 150,
-            red: 50,
-            purple: 20
-        };
         this.floaters = {};
         this.debug = false;
 
         this.groups = {};
-        this.prefabs = {};
     }
 
     init(assetData) {
@@ -43,8 +37,15 @@ class GameState extends Phaser.State {
         // Player
         this.player = new Player(this, center.x, center.y);
 
-        // Create floating resources
-        this.createFloaters();
+        // Spawn resources
+        const spawnResources = data => {
+            let name = data[0], resource = data[1];
+            let count = resource.count || 1;
+            for (let i = 0; i < count; i++) {
+                this.spawnResource(resource.prefabType, name, resource.properties);
+            }
+        };
+        Object.entries(this.assetData.resources).map(spawnResources);
         
         // Initialize the HUD plugin
         this.hud = this.game.plugins.add(HUD, this, this.assetData.hud);
@@ -53,24 +54,20 @@ class GameState extends Phaser.State {
         this.game.camera.follow(this.player.player);
     }
 
-    createFloaters() {
-        for (let i = 0; i < this.floaterCounts.green; i++) {
-            let floater = new StaticFloater_Green(this.game);
-            this.floaters[floater.id] = floater;
+    spawnResource(prefabType, name, properties) {
+        let x = this.game.math.between(0, this.game.world.width);
+        let y = this.game.math.between(0, this.game.world.height);
+        let prefab = this.prefabFactory(prefabType, name, x, y, properties);
+        if (prefabType === "Floater") {
+            this.floaters[prefab.id] = prefab;
         }
-        for (let i = 0; i < this.floaterCounts.red; i++) {
-            let floater = new StaticFloater_Red(this.game);
-            this.floaters[floater.id] = floater;
-        }
-        for (let i = 0; i < this.floaterCounts.purple; i++) {
-            let floater = new StaticFloater_Purple(this.game);
-            this.floaters[floater.id] = floater;
-        }
+        return prefab;
     }
 
     prefabFactory(prefabType, name, x, y, properties) {
         const prefabs = {
             StatText,
+            Floater
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);
@@ -78,19 +75,9 @@ class GameState extends Phaser.State {
         return new prefabs[prefabType](this, name, x, y, properties);
     }
 
-    floaterFactory(className) {
-        const classes = {
-            StaticFloater_Green,
-            StaticFloater_Red,
-            StaticFloater_Purple
-        }
-        return new classes[className](this.game);
-    }
-
     removeFloater(floaterId) {
-        let className = this.floaters[floaterId].constructor.name;
+        let floater = this.floaters[floaterId];
+        this.spawnResource(floater.constructor.name, floater.name, this.assetData.resources[floater.name].properties);
         delete this.floaters[floaterId];
-        let newFloater = this.floaterFactory(className);
-        this.floaters[newFloater.id] = newFloater;
     }
 }

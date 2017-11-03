@@ -1,0 +1,38 @@
+{
+    "floaterGreen": {
+        "prefabType": "Floater",
+        "count": 150,
+        "properties": {
+            "radiusSpread": [5, 10],
+            "color": "#0fc487",
+            "resourceSpread": {
+                "energy": [5,10],
+                "green": [0, 3]
+            }
+        }
+    },
+    "floaterRed": {
+        "prefabType": "Floater",
+        "count": 50,
+        "properties": {
+            "radiusSpread": [10, 20],
+            "color": "#a82f39",
+            "resourceSpread": {
+                "energy": [20,30],
+                "red": [0, 3]
+            }
+        }
+    },
+    "floaterPurple": {
+        "prefabType": "Floater",
+        "count": 20,
+        "properties": {
+            "radiusSpread": [40, 50],
+            "color": "#7b2fa8",
+            "resourceSpread": {
+                "energy": [40,100],
+                "purple": [0, 2]
+            }
+        }
+    }
+}

@@ -5,7 +5,8 @@ class BootState extends Phaser.State {
         this.game.config.enableDebug = true;
         
         this.assetFiles = assetFiles || {
-            "hud": "./assets/hud.json"
+            "hud": "./assets/hud.json",
+            "resources": "./assets/resources.json"
         };
         this.startState = startState || (this.game.config.enableDebug ? "Game" : "Menu");
         

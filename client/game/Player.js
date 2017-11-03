@@ -5,7 +5,7 @@ class Player extends Phaser.Group {
         this.gameState = gameState;
         this.debug = false;
         this.color = 0x3916a0;
-        this.outlineColor = 0x51efe7;
+        //this.outlineColor = 0x51efe7;
         this.startingPoint = {
             x: x,
             y: y
@@ -20,6 +20,7 @@ class Player extends Phaser.Group {
             purple: 0
         };
         this.lastEnergyThreshold = this.resource.energy;
+        this.updateEnergy();
 
         // Input bindings
         this.wasdKeys = this.game.input.keyboard.addKeys({
@@ -64,7 +65,9 @@ class Player extends Phaser.Group {
 
         let floater = this.gameState.floaters[body.data.id];
         if (floater.radius < this.radius) {
-            this.addResource(floater, 'energy');
+            if (this.addResource(floater, 'energy')) {
+                this.updateEnergy();
+            }
             this.addResource(floater, 'green');
             this.addResource(floater, 'red');
             this.addResource(floater, 'purple');
@@ -76,11 +79,26 @@ class Player extends Phaser.Group {
         }
     }
 
+    updateEnergy() {
+        // Check if grow/shrink threshold has been crossed
+        if (this.resource.energy >= this.lastEnergyThreshold * 2) {
+            this.changeSize(1.25);
+            this.lastEnergyThreshold *= 2;
+        }
+        else if (this.resource.energy < this.lastEnergyThreshold / 2) {
+            this.changeSize(0.8);
+            this.lastEnergyThreshold /= 2;
+        }
+
+        // Update stat display
+        this.displayEnergyThreshold = this.resource.energy + " / " + this.lastEnergyThreshold * 2;
+    }
+
     createPlayerGraphics(x, y, radius) {
 
         // Draw player
         const player = this.game.add.graphics(x, y);
-        player.lineStyle(2, this.outlineColor);
+        //player.lineStyle(1, this.outlineColor);
         player.beginFill(this.color);
         player.drawCircle(0, 0, radius * 2);
         player.endFill();
@@ -115,15 +133,6 @@ class Player extends Phaser.Group {
     }
 
     update() {
-        // Check if grow/shrink threshold has been crossed
-        if (this.resource.energy >= this.lastEnergyThreshold * 2) {
-            this.changeSize(1.25);
-            this.lastEnergyThreshold *= 2;
-        }
-        else if (this.resource.energy < this.lastEnergyThreshold / 2) {
-            this.changeSize(0.8);
-            this.lastEnergyThreshold /= 2;
-        }
 
         // Check if energy is close to 0
         if (this.resource.energy < 1) {
@@ -131,16 +140,16 @@ class Player extends Phaser.Group {
         }
         
         // Handle keyboard inputs
-        if (this.wasdKeys.left.isDown) {
+        if (this.wasdKeys.left.isDown && !this.wasdKeys.right.isDown) {
             this.player.body.moveLeft(this.speed);
         }
-        if (this.wasdKeys.right.isDown) {
+        if (this.wasdKeys.right.isDown && !this.wasdKeys.left.isDown) {
             this.player.body.moveRight(this.speed);
         }
-        if (this.wasdKeys.up.isDown) {
+        if (this.wasdKeys.up.isDown && !this.wasdKeys.down.isDown) {
             this.player.body.moveUp(this.speed);
         }
-        if (this.wasdKeys.down.isDown) {
+        if (this.wasdKeys.down.isDown && !this.wasdKeys.up.isDown) {
             this.player.body.moveDown(this.speed);
         }
     }

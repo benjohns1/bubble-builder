@@ -7,14 +7,14 @@ class Prefab extends Phaser.Sprite {
         this.properties = properties || {};
 
         // Apply generic sprite prefab properties
-        if (properties.scale) {
-            this.scale.setTo(properties.scale.x, properties.scale.y);
+        if (this.properties.scale) {
+            this.scale.setTo(this.properties.scale.x, this.properties.scale.y);
         }
-        if (properties.anchor) {
-            this.anchor.setTo(properties.anchor.x, properties.anchor.y);
+        if (this.properties.anchor) {
+            this.anchor.setTo(this.properties.anchor.x, this.properties.anchor.y);
         }
 
-        this.gameState.game.add.existing(this);
+        this.game.add.existing(this);
         if (!this.gameState.prefabs) {
             this.gameState.prefabs = {};
         }
