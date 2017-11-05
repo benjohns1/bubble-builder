@@ -18,7 +18,7 @@ class Floater extends Prefab {
             return acc;
         };
         if (this.properties.resourceSpread) {
-            this.resource = Object.entries(this.properties.resourceSpread).reduce(chooseResourceSpread, {});
+            this.resources = Object.entries(this.properties.resourceSpread).reduce(chooseResourceSpread, {});
         }
 
         // Set property defaults

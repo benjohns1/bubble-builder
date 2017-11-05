@@ -1,0 +1,21 @@
+{
+    "base": {
+        "prefabType": "Structure_Base",
+        "properties": {
+            "color": "#4a27b1",
+            "width": 50,
+            "height": 50,
+            "updateTimer": 10000,
+            "energyAmount": 10,
+            "maxEnergy": 200,
+            "buildCost": {
+                "energy": 500,
+                "green": 50,
+                "red": 20
+            },
+            "initialResources": {
+                "energy": 200
+            }
+        }
+    }
+}

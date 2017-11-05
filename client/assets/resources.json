@@ -5,6 +5,7 @@
         "properties": {
             "radiusSpread": [5, 10],
             "color": "#0fc487",
+            "debug": false,
             "resourceSpread": {
                 "energy": [5,10],
                 "green": [0, 3]

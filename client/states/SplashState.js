@@ -14,8 +14,6 @@ class SplashState extends Phaser.State {
             this.loadJsonAsset(key, rawJsonText);
         }
 
-        this.load.image('empty', './assets/images/empty.png');
-
         // Load dynamic asset data
         this.generateGraphics();
     }

@@ -1,7 +1,7 @@
 class Prefab extends Phaser.Sprite {
 
     constructor(gameState, name, x, y, properties) {
-        super(gameState.game, x, y, (properties ? properties.texture : 'empty'));
+        super(gameState.game, x, y, properties.texture);
         this.gameState = gameState;
         this.name = name;
         this.properties = properties || {};

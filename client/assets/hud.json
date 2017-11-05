@@ -7,8 +7,20 @@
     },
     "elements": {
         "bottomLeft": {
+            "size": {
+                "prefabType": "UI_StatText",
+                "properties": {
+                    "group": "hud",
+                    "stat": [ "player", "radius" ],
+                    "valueFormat": {
+                        "methodName": "toFixed",
+                        "args": [1]
+                    },
+                    "label": "Size: "
+                }
+            },
             "energy": {
-                "prefabType": "StatText",
+                "prefabType": "UI_StatText",
                 "properties": {
                     "group": "hud",
                     "stat": [ "player", "displayEnergyThreshold" ],
@@ -16,27 +28,35 @@
                 }
             },
             "green": {
-                "prefabType": "StatText",
+                "prefabType": "UI_StatText",
                 "properties": {
                     "group": "hud",
-                    "stat": [ "player", "resource", "green" ],
+                    "stat": [ "player", "resources", "green" ],
                     "label": "Green: "
                 }
             },
             "red": {
-                "prefabType": "StatText",
+                "prefabType": "UI_StatText",
                 "properties": {
                     "group": "hud",
-                    "stat": [ "player", "resource", "red" ],
+                    "stat": [ "player", "resources", "red" ],
                     "label": "Red: "
                 }
             },
             "purple": {
-                "prefabType": "StatText",
+                "prefabType": "UI_StatText",
                 "properties": {
                     "group": "hud",
-                    "stat": [ "player", "resource", "purple" ],
+                    "stat": [ "player", "resources", "purple" ],
                     "label": "Purple: "
+                }
+            }
+        },
+        "bottomRight": {
+            "buildBase": {
+                "prefabType": "BuildIcon",
+                "properties": {
+                    "structureName": "base"
                 }
             }
         }

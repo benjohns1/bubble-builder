@@ -5,6 +5,7 @@ class GameState extends Phaser.State {
         this.width = 5000;
         this.height = 5000;
         this.floaters = {};
+        this.structures = {};
         this.debug = false;
 
         this.groups = {};
@@ -52,6 +53,9 @@ class GameState extends Phaser.State {
 
         // Camera
         this.game.camera.follow(this.player.player);
+
+        // Initialize popup window handler
+        this.popupWindow = this.prefabFactory("UI_Popup", "popup", 0, 0, {});
     }
 
     spawnResource(prefabType, name, properties) {
@@ -64,10 +68,19 @@ class GameState extends Phaser.State {
         return prefab;
     }
 
+    spawnStructure(prefabType, name, x, y, properties) {
+        let prefab = this.prefabFactory(prefabType, name, x, y, properties);
+        this.structures[prefab.id] = prefab;
+        return prefab;
+    }
+
     prefabFactory(prefabType, name, x, y, properties) {
         const prefabs = {
-            StatText,
-            Floater
+            UI_StatText,
+            Floater,
+            BuildIcon,
+            Structure_Base,
+            UI_Popup
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);
