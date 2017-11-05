@@ -10,7 +10,7 @@ class Player extends Phaser.Group {
             x: x,
             y: y
         };
-        this.freeBuild = false;
+        this.freeBuild = true;
         let _radius = 10;
         Object.defineProperty(this, "radius", {
             get: () => _radius,

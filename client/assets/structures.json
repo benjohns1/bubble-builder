@@ -32,6 +32,9 @@
                         "property": [ "resources", "energy" ],
                         "label": "Energy: "
                     }
+                },
+                "resourceTrader": {
+                    "prefabType": "UI_ResourceTrader"
                 }
             }
         }

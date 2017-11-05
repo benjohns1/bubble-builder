@@ -6,21 +6,10 @@ class UI_Popup extends Prefab {
         this.debug = this.properties.debug || false;
         this.dataPrefabs = [];
 
-        this.cornerRadius = 2;
-        this.closeTextStyle = {
-            "font": "15px Arial",
-            "fill": "#ffffff"
-        };
-        this.closeButtonSize = {
-            x: 15,
-            y: 15
-        };
-        this.margins = {
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 10
-        };
+        this.cornerRadius = this.properties.cornerRadius;
+        this.closeTextStyle = this.properties.closeTextStyle;
+        this.closeButtonSize = this.properties.closeButtonSize;
+        this.margins = this.properties.margins;
     }
 
     open(displayData, x, y) {
@@ -122,7 +111,7 @@ class UI_Popup extends Prefab {
     }
 
     static createButton(game, width, height, cornerRadius, text, textStyle, closeCallback, context) {
-        const closeButton = UI_Popup.createButtonGraphics(this.game, width, height, cornerRadius);
+        const closeButton = this.createButtonGraphics(game, width, height, cornerRadius);
         const button = new Phaser.Button(game, 0, 0, closeButton.generateTexture(), closeCallback, context);
         const textObj = new Phaser.Text(game, 4, -3, text, textStyle);
         button.addChild(textObj);

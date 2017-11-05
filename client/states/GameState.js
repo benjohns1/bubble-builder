@@ -32,6 +32,20 @@ class GameState extends Phaser.State {
         myBitmap.context.fillRect(0, 0, this.game.world.width, this.game.world.height);
         this.game.add.sprite(0, 0, myBitmap, 'background');
 
+        /*
+        this.game.add.nineSlice(100, 100, 'btnDefault', null, 200, 50);
+        var input = this.game.add.inputField(20, 90, {
+            font: '15px Arial',
+            fill: '#212121',
+            fontWeight: 'bold',
+            width: 800,
+            padding: 8,
+            borderWidth: 1,
+            borderColor: '#000',
+            borderRadius: 2,
+            placeHolder: 'Text'
+        });*/
+
         // Game physics
         this.game.physics.startSystem(Phaser.Physics.P2JS);
 
@@ -55,7 +69,7 @@ class GameState extends Phaser.State {
         this.game.camera.follow(this.player.player);
 
         // Initialize popup window handler
-        this.popupWindow = this.prefabFactory("UI_Popup", "popup", 0, 0, {});
+        this.popupWindow = this.prefabFactory("UI_Popup", "popup", 0, 0, this.assetData.ui.popup);
     }
 
     spawnResource(prefabType, name, properties) {
@@ -80,7 +94,8 @@ class GameState extends Phaser.State {
             BuildIcon,
             Structure_Base,
             UI_Popup,
-            UI_TextListener
+            UI_TextListener,
+            UI_ResourceTrader
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);

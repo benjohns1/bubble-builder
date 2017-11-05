@@ -8,6 +8,9 @@ class SplashState extends Phaser.State {
 
     preload() {
         this.showLoadingBar();
+
+        this.game.add.plugin(PhaserInput.Plugin);
+        this.game.add.plugin(PhaserNineSlice.Plugin);
         
         // Load JSON configured asset data
         for (let [key, rawJsonText] of Object.entries(this.rawJsonAssetText)) {
@@ -26,8 +29,16 @@ class SplashState extends Phaser.State {
         // Load JSON config file
         this.assetData[key] = JSON.parse(rawJsonText);
 
-        // Loop through 'asset' property in config and load assets based on type
-        // @TODO
+        if (!this.assetData[key].assets) {
+            return;
+        }
+
+        // Loop through 'assets' property in config and load assets based on type
+        for (let assetType in this.assetData[key].assets) {
+            for (let assetName in this.assetData[key].assets[assetType]) {
+                this.load[assetType](assetName, ...this.assetData[key].assets[assetType][assetName]);
+            }
+        }
     }
 
     showLoadingBar() {

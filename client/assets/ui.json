@@ -1,0 +1,27 @@
+{
+    "assets": {
+        "nineSlice": {
+            "btnDefault": [
+                "/assets/images/btn_clean.png",
+                25
+            ]
+        }
+    },
+    "popup": {
+        "closeTextStyle": {
+            "font": "15px Arial",
+            "fill": "#ffffff"
+        },
+        "cornerRadius": 2,
+        "closeButtonSize": {
+            "x": 15,
+            "y": 15
+        },
+        "margins": {
+            "left": 10,
+            "right": 10,
+            "top": 10,
+            "bottom": 10
+        }
+    }
+}

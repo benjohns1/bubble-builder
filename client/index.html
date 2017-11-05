@@ -18,6 +18,8 @@
 
 <body>
 <script src="/lib/phaser.js"></script>
+<script src="/lib/phaser-input.js"></script>
+<script src="/lib/phaser-nineslice.js"></script>
 <script src="/system/Exception.js"></script>
 <script src="/states/BootState.js"></script>
 <script src="/states/SplashState.js"></script>
@@ -31,6 +33,7 @@
 <script src="/prefabs/Prefab.js"></script>
 <script src="/prefabs/ui/Popup.js"></script>
 <script src="/prefabs/ui/TextListener.js"></script>
+<script src="/prefabs/ui/ResourceTrader.js"></script>
 <script src="/prefabs/BuildIcon.js"></script>
 <script src="/prefabs/Floater.js"></script>
 <script src="/prefabs/Structure.js"></script>
@@ -43,7 +46,6 @@
         width: window.innerWidth,
         height: window.innerHeight, 
         renderer: Phaser.AUTO,
-        parent: 'content',
         state: BootState
     });
 </script>
