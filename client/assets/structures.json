@@ -7,7 +7,6 @@
             "height": 50,
             "updateTimer": 10000,
             "energyAmount": 10,
-            "maxEnergy": 200,
             "buildCost": {
                 "energy": 500,
                 "green": 50,
@@ -15,6 +14,25 @@
             },
             "initialResources": {
                 "energy": 200
+            },
+            "resourceLimits": {
+                "energy": [0,200]
+            },
+            "displayData": {
+                "title": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "property": [ "displayTitle" ]
+                    }
+                },
+                "energy": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "energy" ],
+                        "label": "Energy: "
+                    }
+                }
             }
         }
     }

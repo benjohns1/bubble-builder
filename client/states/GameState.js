@@ -76,11 +76,11 @@ class GameState extends Phaser.State {
 
     prefabFactory(prefabType, name, x, y, properties) {
         const prefabs = {
-            UI_StatText,
             Floater,
             BuildIcon,
             Structure_Base,
-            UI_Popup
+            UI_Popup,
+            UI_TextListener
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);

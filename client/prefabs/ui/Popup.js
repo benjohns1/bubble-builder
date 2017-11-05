@@ -4,6 +4,7 @@ class UI_Popup extends Prefab {
         super(gameState, name, x, y, properties);
         // Set property defaults
         this.debug = this.properties.debug || false;
+        this.dataPrefabs = [];
 
         this.cornerRadius = 2;
         this.closeTextStyle = {
@@ -29,6 +30,7 @@ class UI_Popup extends Prefab {
         if (!displayData || !Object.entries(displayData).length) {
             return;
         }
+        this.displayData = displayData;
         const displayElements = Object.entries(displayData);
         if (!displayElements.length) {
             return;
@@ -43,8 +45,7 @@ class UI_Popup extends Prefab {
         let elementX = this.margins.left;
         let elementY = this.margins.top;
         let maxWidth = 0;
-        this.dataPrefabs = [];
-        displayElements.map(item => {
+        displayElements.forEach(item => {
             const name = item[0], element = item[1];
             let prefab = this.gameState.prefabFactory(element.prefabType, name, elementX, elementY, element.properties);
             this.dataPrefabs.push(prefab);
@@ -58,23 +59,55 @@ class UI_Popup extends Prefab {
         // Create generic window graphics
         const width = Math.max(maxWidth, this.closeButtonSize.x) + this.margins.left + this.margins.right;
         const height = Math.max(elementY, this.closeButtonSize.y) + this.margins.bottom;
-        this.bg = UI_Popup.createBgGraphics(this.game, width, height, this.cornerRadius);
-        this.closeButton = UI_Popup.createButton(this.game, this.closeButtonSize.x, this.closeButtonSize.y, this.cornerRadius, "x", this.closeTextStyle, this.close, this);
+        this.bg = this.constructor.createBgGraphics(this.game, width, height, this.cornerRadius);
+        this.closeButton = this.constructor.createButton(this.game, this.closeButtonSize.x, this.closeButtonSize.y, this.cornerRadius, "x", this.closeTextStyle, this.close, this);
         this.closeButton.x = width - this.closeButtonSize.x; // place button at top-right
         this.addChild(this.bg);
         this.addChild(this.closeButton);
 
         this.dataPrefabs.map(prefab => {
+            if (prefab.onChange && prefab.onChange.add) {
+                // Refresh popup window if any content changes
+                prefab.onChange.add(this.refresh, this);
+            }
             this.bg.addChild(prefab);
-            console.log(prefab);
         });
     }
 
-    close() {
-        this.dataPrefabs = [];
-        for (let i = this.children.length-1; i >= 0; i--) {
-            this.children[i].destroy();
+    refresh() {
+        // Calculate max width and height of content
+        let maxWidth = 0;
+        let height = this.margins.top + this.margins.bottom;
+        this.dataPrefabs.forEach(prefab => {
+            height += prefab.getMaxChildProperty('height');
+            let prefabWidth = prefab.getMaxChildProperty('width');
+            if (maxWidth < prefabWidth) {
+                maxWidth = prefabWidth;
+            }
+        });
+        maxWidth += this.margins.left + this.margins.right;
+
+        if (this.bg.height < height || this.bg.width < maxWidth) {
+            // Height or width of content increased, re-render popup
+            this.open(this.displayData, this.x, this.y);
         }
+    }
+
+    close() {
+        this.dataPrefabs.forEach(prefab => {
+            if (prefab.onChange && prefab.onChange.removeAll) {
+                prefab.onChange.removeAll();
+            }
+            prefab.destroy();
+        });
+        this.dataPrefabs = [];
+        if (this.bg) {
+            this.bg.destroy();
+        }
+        if (this.closeButton) {
+            this.closeButton.destroy();
+        }
+        delete this.displayData;
     }
     
     static createBgGraphics(game, width, height, cornerRadius) {

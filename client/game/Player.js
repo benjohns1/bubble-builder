@@ -10,29 +10,26 @@ class Player extends Phaser.Group {
             x: x,
             y: y
         };
-        this.freeBuild = true;
-        this.radius = 10;
+        this.freeBuild = false;
+        let _radius = 10;
+        Object.defineProperty(this, "radius", {
+            get: () => _radius,
+            set: value => {
+                if (value !== _radius) {
+                    this.onChange.dispatch();
+                }
+                _radius = value;
+            }
+        });
         this.speed = 100;
         this.damping = 0.5;
-        this.resource = new Component_ResourceContainer(this, {
+        this.resources = new Component_ResourceContainer(this, {
             energy: 10
         });
-        let temp = new Component_ResourceContainer(this, {
-            energy: 100
-        });
-        this.resource.takeFrom(temp, 'energy');
-        console.log(this.resource.list);
-        this.resource.add('green', 500);
-        this.resource.list.energy += 20;
-        console.log(this.resource.list);
-        console.log("TODO: finish migrating to ResourceContainer");
-        
-        this.resources = {
-            energy: 10,
-            green: 0,
-            red: 0,
-            purple: 0
-        };
+
+        this.resources.onChange.add(this.updateEnergy, this);
+        this.onChange = new Phaser.Signal();
+
         this.lastEnergyThreshold = 10;
 
         // Input bindings
@@ -66,76 +63,6 @@ class Player extends Phaser.Group {
         this.structureCollisionHandler(body);
     }
 
-    addResource(fromEntity, type) {
-        
-        if (!fromEntity.resources[type]) {
-            return false;
-        }
-        this.resources[type] += fromEntity.resources[type];
-        fromEntity.resources[type] = 0;
-        if (type === "energy") {
-            this.updateEnergy();
-        }
-        return true;
-    }
-
-    removeResource(type, amount, allOrNone) {
-
-        // Unknown resource or no resource
-        if (!this.resources[type]) {
-            return 0;
-        }
-
-        // Full amount available, remove entire amount
-        if (this.resources[type] >= amount) {
-            this.resources[type] -= amount;
-            if (type === "energy") {
-                this.updateEnergy();
-            }
-            return amount;
-        }
-
-        // Only a portion of amount available, don't remove any
-        if (allOrNone) {
-            return 0;
-        }
-
-        // Only a portion of the amount was available, remove what's available
-        const amountRemoved = this.resources[type];
-        this.resources[type] = 0;
-        if (type === "energy") {
-            this.updateEnergy();
-        }
-        return amountRemoved;
-    }
-
-    hasResource(type, amount) {
-        return this.resources[type] >= amount;
-    }
-    
-    addResources(fromEntity) {
-        const resourceList = Object.keys(fromEntity.resources);
-        resourceList.forEach(resourceName => {
-            this.addResource(fromEntity, resourceName);
-        });
-    }
-
-    removeResources(resources) {
-        const resourceList = Object.entries(resources);
-        const notEnough = resourceList.some(resource => {
-            return !this.hasResource(resource[0], resource[1]);
-        });
-        if (notEnough) {
-            return false;
-        }
-        resourceList.forEach(resource => {
-            if (this.removeResource(resource[0], resource[1]) !== resource[1]) {
-                throw new Exception("Error removing resource " + JSON.stringify(resource));
-            }
-        });
-        return true;
-    }
-
     buildStructure(name, x, y) {
 
         // Get structure data
@@ -145,8 +72,8 @@ class Player extends Phaser.Group {
         }
 
         // Remove resources from player
-        if (!this.freeBuild && !this.removeResources(structureData.properties.buildCost)) {
-            console.log("Cannot build, not enough resources");
+        if (!this.freeBuild && !this.resources.removeResources(structureData.properties.buildCost)) {
+            console.warn("Cannot build, not enough resources");
             return false;
         }
 
@@ -161,7 +88,7 @@ class Player extends Phaser.Group {
 
         let structure = this.gameState.structures[body.data.id];
         if (structure.resources) {
-            this.addResources(structure);
+            this.resources.takeAllFrom(structure.resources);
         }
     }
 
@@ -171,8 +98,8 @@ class Player extends Phaser.Group {
         }
 
         let floater = this.gameState.floaters[body.data.id];
-        if (floater.radius < this.radius) {
-            this.addResources(floater);
+        if (floater.radius < this.radius && floater.resources) {
+            this.resources.takeAllFrom(floater.resources);
     
             // Destroy floater
             this.gameState.removeFloater(floater.id);
@@ -182,6 +109,11 @@ class Player extends Phaser.Group {
     }
 
     updateEnergy() {
+        
+        // Check if energy is less than 0
+        if (this.resources.energy < 0) {
+            console.warn('game over');
+        }
 
         // Check if grow/shrink threshold has been crossed
         let multiplier = 1.0;
@@ -234,27 +166,20 @@ class Player extends Phaser.Group {
         player.body.damping = this.damping;
     }
 
-    changeSize(multiplier, duration, ease, onCompleteCallback) {
-        duration = duration || 1000;
-        ease = ease || Phaser.Easing.Sinusoidal.In;
+    changeSize(multiplier) {
+        const duration = 1000;
+        const ease = Phaser.Easing.Sinusoidal.In;
+
         const newScale = this.player.scale.x * multiplier;
         const newBodyRadius = this.player.body.data.shapes[0].radius * multiplier;
         const newRadius = this.radius * multiplier;
-        const t = this.game.add.tween(this.player.scale).to( { x: newScale, y: newScale }, duration, ease, true);
-        if (onCompleteCallback) {
-            t.onComplete.add(onCompleteCallback);
-        }
+        this.game.add.tween(this.player.scale).to( { x: newScale, y: newScale }, duration, ease, true);
         this.game.add.tween(this.player.body.data.shapes[0]).to( { radius: newBodyRadius }, duration, ease, true);
         this.game.add.tween(this).to( { radius: newRadius }, duration, ease, true);
         return newRadius;
     }
 
     update() {
-
-        // Check if energy is less than 0
-        if (this.resources.energy < 0) {
-            console.log('game over');
-        }
 
         // Brake
         let speedMultiplier = 1.0;

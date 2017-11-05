@@ -8,8 +8,8 @@ class Structure extends Prefab {
         this.color = Phaser.Color.hexToRGB(this.properties.color || "#ffffff");
 
         // Create graphics and setup physics
-        this.structure = Structure.createGraphics(this.game, this.anchor, this.properties.width, this.properties.height, this.color);
-        this.id = Structure.setupPhysics(this.game, this, this.properties.width, this.properties.height, this.debug);
+        this.structure = this.constructor.createGraphics(this.game, this.anchor, this.properties.width, this.properties.height, this.color);
+        this.id = this.constructor.setupPhysics(this.game, this, this.properties.width, this.properties.height, this.debug);
         this.addChild(this.structure);
 
         // Enable input for this structure
@@ -19,8 +19,8 @@ class Structure extends Prefab {
 
     onInputDown(displayObject, pointer) {
         const findDisplayData = function(obj) {
-            if (obj.getDisplayData) {
-                return obj.getDisplayData();
+            if (obj.displayData) {
+                return obj.displayData;
             }
             if (!obj.parent) {
                 return null;

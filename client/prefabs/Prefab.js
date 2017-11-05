@@ -6,6 +6,22 @@ class Prefab extends Phaser.Sprite {
         this.name = name;
         this.properties = properties || {};
 
+        // Add special displayData property
+        this.displayData = {};
+        if (this.properties.displayData) {
+            this.displayData = Object.entries(this.properties.displayData).reduce((data, entry) => {
+                let entryData = entry[1];
+                if (!entryData.properties) {
+                    entryData.properties = {};
+                }
+                if (!entryData.properties.context) {
+                    entryData.properties.context = this;
+                }
+                data[entry[0]] = entryData;
+                return data;
+            }, {});
+        }
+
         // Apply generic sprite prefab properties
         if (this.properties.scale) {
             this.scale.setTo(this.properties.scale.x, this.properties.scale.y);
