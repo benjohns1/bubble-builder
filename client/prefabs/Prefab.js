@@ -5,6 +5,7 @@ class Prefab extends Phaser.Sprite {
         this.gameState = gameState;
         this.name = name;
         this.properties = properties || {};
+        this.debug = this.properties.debug || false;
 
         // Add special displayData property
         this.displayData = {};
@@ -40,6 +41,14 @@ class Prefab extends Phaser.Sprite {
     destroy() {
         delete this.gameState.prefabs[name];
         super.destroy();
+    }
+
+    getWidth() {
+        return this.getMaxChildProperty('width');
+    }
+
+    getHeight() {
+        return this.getMaxChildProperty('height');
     }
 
     getMaxChildProperty(prop) {

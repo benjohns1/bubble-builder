@@ -7,6 +7,7 @@ class GameState extends Phaser.State {
         this.floaters = {};
         this.structures = {};
         this.debug = false;
+        this.uiFactory = {};
 
         this.groups = {};
     }
@@ -16,7 +17,7 @@ class GameState extends Phaser.State {
     }
 
     create() {
-        this.groups = {};
+        this.uiFactory.textButton = new UIFactory_TextButton(this.game, { "font": "16px Arial", "fill": "#000000" }, 2, { "top": 5, "right": 5, "bottom": 0, "left": 5 });
 
         // Get center of screen and setup world bounds
         const center = { x: this.game.width / 2, y: this.game.height / 2 };
@@ -31,20 +32,6 @@ class GameState extends Phaser.State {
         myBitmap.context.fillStyle = grd;
         myBitmap.context.fillRect(0, 0, this.game.world.width, this.game.world.height);
         this.game.add.sprite(0, 0, myBitmap, 'background');
-
-        /*
-        this.game.add.nineSlice(100, 100, 'btnDefault', null, 200, 50);
-        var input = this.game.add.inputField(20, 90, {
-            font: '15px Arial',
-            fill: '#212121',
-            fontWeight: 'bold',
-            width: 800,
-            padding: 8,
-            borderWidth: 1,
-            borderColor: '#000',
-            borderRadius: 2,
-            placeHolder: 'Text'
-        });*/
 
         // Game physics
         this.game.physics.startSystem(Phaser.Physics.P2JS);

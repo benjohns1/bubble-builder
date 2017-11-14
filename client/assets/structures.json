@@ -34,7 +34,12 @@
                     }
                 },
                 "resourceTrader": {
-                    "prefabType": "UI_ResourceTrader"
+                    "prefabType": "UI_ResourceTrader",
+                    "properties": {
+                        "elementPadding": {
+                            "x": 10
+                        }
+                    }
                 }
             }
         }

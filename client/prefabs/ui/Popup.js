@@ -1,14 +1,10 @@
 class UI_Popup extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
+    constructor(gameState, name, x, y, properties = {}) {
         super(gameState, name, x, y, properties);
         // Set property defaults
         this.debug = this.properties.debug || false;
         this.dataPrefabs = [];
-
-        this.cornerRadius = this.properties.cornerRadius;
-        this.closeTextStyle = this.properties.closeTextStyle;
-        this.closeButtonSize = this.properties.closeButtonSize;
         this.margins = this.properties.margins;
     }
 
@@ -38,19 +34,18 @@ class UI_Popup extends Prefab {
             const name = item[0], element = item[1];
             let prefab = this.gameState.prefabFactory(element.prefabType, name, elementX, elementY, element.properties);
             this.dataPrefabs.push(prefab);
-            elementY += prefab.getMaxChildProperty('height');
-            let prefabWidth = prefab.getMaxChildProperty('width');
+            elementY += prefab.getHeight();
+            let prefabWidth = prefab.getWidth();
             if (maxWidth < prefabWidth) {
                 maxWidth = prefabWidth;
             }
         });
 
         // Create generic window graphics
-        const width = Math.max(maxWidth, this.closeButtonSize.x) + this.margins.left + this.margins.right;
-        const height = Math.max(elementY, this.closeButtonSize.y) + this.margins.bottom;
-        this.bg = this.constructor.createBgGraphics(this.game, width, height, this.cornerRadius);
-        this.closeButton = this.constructor.createButton(this.game, this.closeButtonSize.x, this.closeButtonSize.y, this.cornerRadius, "x", this.closeTextStyle, this.close, this);
-        this.closeButton.x = width - this.closeButtonSize.x; // place button at top-right
+        const width = Math.max(maxWidth, this.properties.closeButtonSize.x) + this.margins.left + this.margins.right;
+        const height = Math.max(elementY, this.properties.closeButtonSize.y) + this.margins.bottom;
+        this.bg = this.constructor.createBgGraphics(this.game, width, height, this.properties.cornerRadius);
+        this.closeButton = this.gameState.uiFactory.textButton.create("x", this.close, this, width - this.properties.closeButtonSize.x, 0, this.properties.closeButtonSize.x, this.properties.closeButtonSize.y, this.properties.cornerRadius, this.properties.closeTextStyle, this.properties.closeTextPadding, this.properties.closeTextOffset);
         this.addChild(this.bg);
         this.addChild(this.closeButton);
 
@@ -68,8 +63,8 @@ class UI_Popup extends Prefab {
         let maxWidth = 0;
         let height = this.margins.top + this.margins.bottom;
         this.dataPrefabs.forEach(prefab => {
-            height += prefab.getMaxChildProperty('height');
-            let prefabWidth = prefab.getMaxChildProperty('width');
+            height += prefab.getHeight();
+            let prefabWidth = prefab.getWidth();
             if (maxWidth < prefabWidth) {
                 maxWidth = prefabWidth;
             }
@@ -104,23 +99,6 @@ class UI_Popup extends Prefab {
         // Draw bg
         const g = new Phaser.Graphics(game);
         g.beginFill(0xffffff);
-        g.drawRoundedRect(0, 0, width, height, cornerRadius);
-        g.endFill();
-
-        return g;
-    }
-
-    static createButton(game, width, height, cornerRadius, text, textStyle, closeCallback, context) {
-        const closeButton = this.createButtonGraphics(game, width, height, cornerRadius);
-        const button = new Phaser.Button(game, 0, 0, closeButton.generateTexture(), closeCallback, context);
-        const textObj = new Phaser.Text(game, 4, -3, text, textStyle);
-        button.addChild(textObj);
-        return button;
-    }
-
-    static createButtonGraphics(game, width, height, cornerRadius) {
-        const g = new Phaser.Graphics(game);
-        g.beginFill(0xaaaaaa);
         g.drawRoundedRect(0, 0, width, height, cornerRadius);
         g.endFill();
 

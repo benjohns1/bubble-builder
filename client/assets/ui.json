@@ -12,6 +12,16 @@
             "font": "15px Arial",
             "fill": "#ffffff"
         },
+        "closeTextPadding": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+        },
+        "closeTextOffset": {
+            "x": 4,
+            "y": -3
+        },
         "cornerRadius": 2,
         "closeButtonSize": {
             "x": 15,
