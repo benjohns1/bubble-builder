@@ -11,7 +11,8 @@ class Prefab extends Phaser.Sprite {
         this.displayData = {};
         if (this.properties.displayData) {
             this.displayData = Object.entries(this.properties.displayData).reduce((data, entry) => {
-                let entryData = entry[1];
+                let entryData = {};
+                Phaser.Utils.extend(true, entryData, entry[1]);
                 if (!entryData.properties) {
                     entryData.properties = {};
                 }
@@ -32,14 +33,9 @@ class Prefab extends Phaser.Sprite {
         }
 
         this.game.add.existing(this);
-        if (!this.gameState.prefabs) {
-            this.gameState.prefabs = {};
-        }
-        this.gameState.prefabs[name] = this;
     }
 
     destroy() {
-        delete this.gameState.prefabs[name];
         super.destroy();
     }
 

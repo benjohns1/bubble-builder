@@ -26,7 +26,6 @@ class Component_PropertyListener extends Component {
     }
 
     checkUpdate() {
-        
         let currentValue = this.property.reduce((prop, next) => {
             if (next === undefined) {
                 return prop;
