@@ -18,6 +18,7 @@ class GameState extends Phaser.State {
 
     create() {
         this.uiFactory.textButton = new UIFactory_TextButton(this.game, { "font": "16px Arial", "fill": "#000000" }, 2, { "top": 5, "right": 5, "bottom": 0, "left": 5 });
+        this.uiFactory.textDropdown = new UIFactory_TextDropdown(this.game, { "font": "16px Arial", "fill": "#000000" }, 2, { "top": 5, "right": 5, "bottom": 0, "left": 5 });
 
         // Get center of screen and setup world bounds
         const center = { x: this.game.width / 2, y: this.game.height / 2 };
