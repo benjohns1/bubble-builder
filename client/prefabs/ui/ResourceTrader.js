@@ -14,14 +14,21 @@ class UI_ResourceTrader extends Prefab {
         this.addChild(this.btnTake);
         
         currentX += this.btnTake.width + this.elementPadding.x;
-        this.btnSelect = this.gameState.uiFactory.textDropdown.create("Resource", this.selectResource, this, currentX);
-        this.realWidth += this.btnSelect.width + this.elementPadding.x;
-        this.addChild(this.btnSelect);
+        this.selectDropdown = this.gameState.uiFactory.textDropdown.create({
+            "energy": "Energy",
+            "green": "Green",
+            "red": "Red",
+            "purple": "Purple"
+        }, "Select resource", this.selectResource, this, currentX);
+        this.realWidth += this.selectDropdown.width + this.elementPadding.x;
+        this.addChild(this.selectDropdown);
         
-        currentX += this.btnSelect.width + this.elementPadding.x
+        currentX += this.selectDropdown.width + this.elementPadding.x
         this.btnGive = this.gameState.uiFactory.textButton.create("Give", this.giveResource, this, currentX);
         this.realWidth += this.btnGive.width + this.elementPadding.x;
         this.addChild(this.btnGive);
+
+        this.isOkay = "okay!";
     }
 
     getWidth() {
@@ -37,6 +44,6 @@ class UI_ResourceTrader extends Prefab {
     }
     
     selectResource() {
-        console.log('select resource');
+        console.log('select resource', arguments, this.isOkay);
     }
 }

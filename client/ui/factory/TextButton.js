@@ -1,4 +1,4 @@
-class UIFactory_TextButton {
+class UI_Factory_TextButton {
 
     constructor(game, textStyle = { "font": "16px Arial", "fill": "#000000" }, cornerRadius = 2, padding = { "top": 0, "right": 0, "bottom": 0, "left": 0 }, textOffset = { "x": 0, "y": 0 }) {
         this.game = game;
@@ -9,21 +9,6 @@ class UIFactory_TextButton {
     }
 
     create(text, callback = undefined, context = undefined, x = 0, y = 0, width = undefined, height = undefined, cornerRadius = this.cornerRadius, textStyle = this.textStyle, padding = this.padding, textOffset = this.textOffset) {
-
-        /*
-        // TODO: USE NINE-SLICE?
-        this.game.add.nineSlice(100, 100, 'btnDefault', null, 200, 50);
-        var input = this.game.add.inputField(20, 90, {
-            font: '15px Arial',
-            fill: '#212121',
-            fontWeight: 'bold',
-            width: 800,
-            padding: 8,
-            borderWidth: 1,
-            borderColor: '#000',
-            borderRadius: 2,
-            placeHolder: 'Text'
-        });*/
 
         // Create button text
         let textObj;
