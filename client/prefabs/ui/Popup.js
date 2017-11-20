@@ -6,9 +6,10 @@ class UI_Popup extends Prefab {
         this.debug = this.properties.debug || false;
         this.dataPrefabs = [];
         this.margins = this.properties.margins;
+        this.showCloseButton = (this.properties.closeButtonSize && this.properties.closeButtonSize.x > 0);
     }
 
-    open(displayData, x, y) {
+    open(displayData, x = 0, y = 0, fixedToCamera = false) {
         // Reset any currently visible popups
         this.close();
         
@@ -31,6 +32,7 @@ class UI_Popup extends Prefab {
         let elementY = this.margins.top;
         let maxWidth = 0;
         displayElements.forEach(item => {
+            // Create each element prefab for UI
             const name = item[0], element = item[1];
             let prefab = this.gameState.prefabFactory(element.prefabType, name, elementX, elementY, element.properties);
             this.dataPrefabs.push(prefab);
@@ -42,12 +44,15 @@ class UI_Popup extends Prefab {
         });
 
         // Create generic window graphics
-        const width = Math.max(maxWidth, this.properties.closeButtonSize.x) + this.margins.left + this.margins.right;
-        const height = Math.max(elementY, this.properties.closeButtonSize.y) + this.margins.bottom;
+        const width = Math.max(maxWidth, (this.showCloseButton ? this.properties.closeButtonSize.x : 0)) + this.margins.left + this.margins.right;
+        const height = Math.max(elementY, (this.showCloseButton ? this.properties.closeButtonSize.y : 0)) + this.margins.bottom;
         this.bg = this.constructor.createBgGraphics(this.game, width, height, this.properties.cornerRadius);
-        this.closeButton = this.gameState.uiFactory.textButton.create("x", this.close, this, width - this.properties.closeButtonSize.x, 0, this.properties.closeButtonSize.x, this.properties.closeButtonSize.y, this.properties.cornerRadius, this.properties.closeTextStyle, this.properties.closeTextPadding, this.properties.closeTextOffset);
         this.addChild(this.bg);
-        this.addChild(this.closeButton);
+        
+        if (this.showCloseButton) {
+            this.closeButton = this.gameState.uiFactory.textButton.create("x", this.close, this, width - this.properties.closeButtonSize.x, 0, this.properties.closeButtonSize.x, this.properties.closeButtonSize.y, this.properties.cornerRadius, this.properties.closeTextStyle, this.properties.closeTextPadding, this.properties.closeTextOffset);
+            this.addChild(this.closeButton);
+        }
 
         this.dataPrefabs.map(prefab => {
             if (prefab.onChange && prefab.onChange.add) {

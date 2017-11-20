@@ -7,6 +7,7 @@ class Component_PropertyListener extends Component {
         this.context = context || parent;
         this.callback = callback;
         this.callbackContext = callbackContext;
+        this.isObjectProperty = false;
 
         // Listen for signal when property is updated
         if (Array.isArray(signal)) {
@@ -35,7 +36,7 @@ class Component_PropertyListener extends Component {
             }
             return undefined;
         }, this.context);
-        if (currentValue !== this.propValue) {
+        if ((currentValue !== this.propValue) || (typeof(currentValue) === "object")) {
             this.propValue = currentValue;
             this.callback.call(this.callbackContext, currentValue);
         }

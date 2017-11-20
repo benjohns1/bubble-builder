@@ -33,5 +33,18 @@
             "top": 10,
             "bottom": 10
         }
+    },
+    "hover": {
+        "closeTextStyle": {
+            "font": "15px Arial",
+            "fill": "#ffffff"
+        },
+        "cornerRadius": 2,
+        "margins": {
+            "left": 10,
+            "right": 10,
+            "top": 10,
+            "bottom": 10
+        }
     }
 }

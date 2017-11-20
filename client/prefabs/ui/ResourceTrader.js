@@ -4,31 +4,66 @@ class UI_ResourceTrader extends Prefab {
         super(gameState, name, x, y, properties);
 
         this.realWidth = 0;
+        this.source = this.properties.context;
+        this.player = this.gameState.player;
+        this.currentResource = "energy";
 
         // Set property defaults
         this.elementPadding = this.properties.elementPadding || { "x": 0 };
 
-        let currentX = 0;
-        this.btnTake = this.gameState.uiFactory.textButton.create("Take", this.takeResource, this, currentX);
-        this.realWidth += this.btnTake.width;
+        // Take button
+        this.btnTake = this.gameState.uiFactory.textButton.create("Take", this.takeResource, this, 0);
+        this.realWidth += this.btnTake.width + this.elementPadding.x;
         this.addChild(this.btnTake);
-        
-        currentX += this.btnTake.width + this.elementPadding.x;
-        this.selectDropdown = this.gameState.uiFactory.textDropdown.create({
+
+        // Take input box
+        this.takeAmount = this.game.add.inputField(this.realWidth, 0, {
+            width: 32,
+            padding: 10,
+            type: PhaserInput.InputType.number
+        });
+        this.realWidth += this.takeAmount.width + 20 + this.elementPadding.x;
+        this.addChild(this.takeAmount);
+
+        // Select resource
+        this.resource = this.gameState.uiFactory.textDropdown.create({
             "energy": "Energy",
             "green": "Green",
             "red": "Red",
             "purple": "Purple"
-        }, "Select resource", this.selectResource, this, currentX);
-        this.realWidth += this.selectDropdown.width + this.elementPadding.x;
-        this.addChild(this.selectDropdown);
-        
-        currentX += this.selectDropdown.width + this.elementPadding.x
-        this.btnGive = this.gameState.uiFactory.textButton.create("Give", this.giveResource, this, currentX);
-        this.realWidth += this.btnGive.width + this.elementPadding.x;
-        this.addChild(this.btnGive);
+        }, this.currentResource, this.resourceSelected, this, this.realWidth);
+        this.realWidth += this.resource.width + this.elementPadding.x;
+        this.addChild(this.resource);
 
-        this.isOkay = "okay!";
+        // Give input box
+        this.giveAmount = this.game.add.inputField(this.realWidth, 0, {
+            width: 32,
+            padding: 10,
+            type: PhaserInput.InputType.number
+        });
+        this.realWidth += this.giveAmount.width + 20 + this.elementPadding.x;
+        this.addChild(this.giveAmount);
+        
+        // Give button
+        this.btnGive = this.gameState.uiFactory.textButton.create("Give", this.giveResource, this, this.realWidth);
+        this.realWidth += this.btnGive.width;
+        this.addChild(this.btnGive);
+        
+        // Listen for resource changes
+        this.sourceListener = new Component_PropertyListener(this, this.properties.property, this.resourcesUpdated, this, this.properties.signal, this.source);
+        this.playerListener = new Component_PropertyListener(this, this.properties.property, this.resourcesUpdated, this, this.properties.signal, this.player);
+
+        this.resourcesUpdated();
+    }
+
+    resourcesUpdated() {
+        if (!this.currentResource) {
+            return;
+        }
+        const takeAmountValue = this.source.resources[this.currentResource];
+        this.takeAmount.setText(takeAmountValue);
+        const giveAmountValue = this.currentResource === "energy" ? Math.max(this.player.resources.energy - 100, 0) : this.player.resources[this.currentResource];
+        this.giveAmount.setText(giveAmountValue);
     }
 
     getWidth() {
@@ -36,14 +71,21 @@ class UI_ResourceTrader extends Prefab {
     }
 
     takeResource() {
-        console.log('take resource');
+        if (!this.currentResource || this.takeAmount <= 0) {
+            return;
+        }
+        this.player.resources.takeFrom(this.source.resources, this.currentResource, this.takeAmount.value);
     }
     
     giveResource() {
-        console.log('give resource');
+        if (!this.currentResource || this.giveAmount <= 0) {
+            return;
+        }
+        this.source.resources.takeFrom(this.player.resources, this.currentResource, this.giveAmount.value);
     }
-    
-    selectResource() {
-        console.log('select resource', arguments, this.isOkay);
+
+    resourceSelected() {
+        this.currentResource = arguments[3];
+        this.resourcesUpdated();
     }
 }

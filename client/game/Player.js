@@ -10,7 +10,7 @@ class Player extends Phaser.Group {
             x: x,
             y: y
         };
-        this.freeBuild = true;
+        this.freeBuild = false;
         let _radius = 10;
         Object.defineProperty(this, "radius", {
             get: () => _radius,
@@ -58,9 +58,6 @@ class Player extends Phaser.Group {
 
         // Check for floater collision
         this.floaterCollisionHandler(body);
-
-        // Check for structure collision
-        this.structureCollisionHandler(body);
     }
 
     buildStructure(name, x, y) {
@@ -79,17 +76,6 @@ class Player extends Phaser.Group {
 
         // Spawn structure
         return this.gameState.spawnStructure(structureData.prefabType, name, x, y, structureData.properties);
-    }
-
-    structureCollisionHandler(body) {
-        if (!this.gameState.structures[body.data.id]) {
-            return false;
-        }
-
-        let structure = this.gameState.structures[body.data.id];
-        if (structure.resources) {
-            this.resources.takeAllFrom(structure.resources);
-        }
     }
 
     floaterCollisionHandler(body) {

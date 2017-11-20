@@ -97,7 +97,7 @@ class Component_ResourceContainer extends Component {
         if (!target[resourceName]) {
             return false;
         }
-        const amountToTake = Math.min(target[resourceName], amount);
+        const amountToTake = Math.min(target[resourceName], amount) || 0;
         this.add(resourceName, amountToTake);
         target.remove(resourceName, amountToTake);
         return true;

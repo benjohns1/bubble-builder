@@ -5,6 +5,7 @@ class BuildIcon extends Prefab {
 
         // Get structure properties
         this.buildStructureData = this.gameState.assetData.structures[this.properties.structureName];
+        super.loadDisplayData();
         const buildProps = this.buildStructureData.properties;
 
         // Set property defaults
@@ -21,6 +22,17 @@ class BuildIcon extends Prefab {
         this.dragIcon.inputEnabled = true;
         this.dragIcon.input.enableDrag();
 
+        this.prevCursor = "inherit";
+        this.dragIcon.events.onInputOver.add((displayObject, pointer) => {
+            this.prevCursor = this.game.canvas.style.cursor;
+            this.game.canvas.style.cursor = "move";
+            this.showBuildData(displayObject, pointer);
+        }, this);
+        this.dragIcon.events.onInputOut.add(() => {
+            this.game.canvas.style.cursor = this.prevCursor;
+            this.gameState.hoverWindow.close();
+        }, this);
+
         this.dragIcon.events.onDragStart.add(this.dragStart, this);
         this.dragIcon.events.onDragUpdate.add(this.dragUpdate, this);
         this.dragIcon.events.onDragStop.add(this.dragStop, this);
@@ -31,6 +43,22 @@ class BuildIcon extends Prefab {
         }
 
         this.cameraDragStart = {};
+    }
+    
+    showBuildData(displayObject, pointer) {
+        const findDisplayData = function(obj) {
+            if (obj.displayData) {
+                return obj.displayData;
+            }
+            if (!obj.parent) {
+                return null;
+            }
+            return findDisplayData(obj.parent); // recursively look higher up chain
+        }
+        this.gameState.hoverWindow.open(findDisplayData(displayObject));
+        this.gameState.hoverWindow.x = this.x - this.getWidth() - this.gameState.hoverWindow.getWidth() - 10 - this.game.camera.x;
+        this.gameState.hoverWindow.y = this.y - this.gameState.hoverWindow.getHeight() + this.getHeight() - this.game.camera.y;
+        this.gameState.hoverWindow.fixedToCamera = true;
     }
 
     dragStart() {
@@ -61,5 +89,8 @@ class BuildIcon extends Prefab {
         // Move drag icon back to toolbar, hide static icon
         this.staticIcon.visible = false;
         this.dragIcon.position.copyFrom(this.staticIcon.position);
+
+        // Change cursor
+        this.game.canvas.style.cursor = "pointer";
     }
 }

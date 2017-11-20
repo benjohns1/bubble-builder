@@ -66,7 +66,36 @@
             "buildBase": {
                 "prefabType": "BuildIcon",
                 "properties": {
-                    "structureName": "base"
+                    "structureName": "base",
+                    "displayData": {
+                        "title": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "title" ]
+                            }
+                        },
+                        "energy": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "energy" ],
+                                "label": "Energy: "
+                            }
+                        },
+                        "green": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "green" ],
+                                "label": "Green: "
+                            }
+                        },
+                        "red": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "red" ],
+                                "label": "Red: "
+                            }
+                        }
+                    }
                 }
             }
         }

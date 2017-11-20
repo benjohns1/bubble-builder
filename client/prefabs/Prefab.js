@@ -9,6 +9,19 @@ class Prefab extends Phaser.Sprite {
 
         // Add special displayData property
         this.displayData = {};
+
+        // Apply generic sprite prefab properties
+        if (this.properties.scale) {
+            this.scale.setTo(this.properties.scale.x, this.properties.scale.y);
+        }
+        if (this.properties.anchor) {
+            this.anchor.setTo(this.properties.anchor.x, this.properties.anchor.y);
+        }
+
+        this.game.add.existing(this);
+    }
+
+    loadDisplayData() {
         if (this.properties.displayData) {
             this.displayData = Object.entries(this.properties.displayData).reduce((data, entry) => {
                 let entryData = {};
@@ -23,16 +36,6 @@ class Prefab extends Phaser.Sprite {
                 return data;
             }, {});
         }
-
-        // Apply generic sprite prefab properties
-        if (this.properties.scale) {
-            this.scale.setTo(this.properties.scale.x, this.properties.scale.y);
-        }
-        if (this.properties.anchor) {
-            this.anchor.setTo(this.properties.anchor.x, this.properties.anchor.y);
-        }
-
-        this.game.add.existing(this);
     }
 
     destroy() {

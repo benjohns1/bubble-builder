@@ -3,6 +3,7 @@
         "prefabType": "Structure_Base",
         "properties": {
             "color": "#4a27b1",
+            "title": "Player Base",
             "width": 50,
             "height": 50,
             "updateTimer": 10000,
@@ -13,7 +14,7 @@
                 "red": 20
             },
             "initialResources": {
-                "energy": 200
+                "energy": 0
             },
             "resourceLimits": {
                 "energy": [0,200]
@@ -33,12 +34,38 @@
                         "label": "Energy: "
                     }
                 },
+                "green": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "green" ],
+                        "label": "Green: "
+                    }
+                },
+                "red": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "red" ],
+                        "label": "Red: "
+                    }
+                },
+                "purple": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "purple" ],
+                        "label": "Purple: "
+                    }
+                },
                 "resourceTrader": {
                     "prefabType": "UI_ResourceTrader",
                     "properties": {
                         "elementPadding": {
                             "x": 10
-                        }
+                        },
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources" ]
                     }
                 }
             }

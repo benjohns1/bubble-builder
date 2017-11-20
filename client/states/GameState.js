@@ -56,8 +56,9 @@ class GameState extends Phaser.State {
         // Camera
         this.game.camera.follow(this.player.player);
 
-        // Initialize popup window handler
-        this.popupWindow = this.prefabFactory("UI_Popup", "popup", 0, 0, this.assetData.ui.popup);
+        // Initialize hover-over window handler
+        this.hoverWindow = this.prefabFactory("UI_Popup", "hoverWindow", 0, 0, this.assetData.ui.hover);
+        this.popupWindow = this.prefabFactory("UI_Popup", "popupWindow", 0, 0, this.assetData.ui.popup);
     }
 
     spawnResource(prefabType, name, properties) {

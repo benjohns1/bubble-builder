@@ -2,6 +2,7 @@ class Structure extends Prefab {
 
     constructor(gameState, name, x, y, properties) {
         super(gameState, name, x, y, properties);
+        super.loadDisplayData();
 
         // Set property defaults
         this.debug = this.properties.debug || false;
@@ -15,6 +16,14 @@ class Structure extends Prefab {
         // Enable input for this structure
         this.structure.inputEnabled = true;
         this.structure.events.onInputDown.add(this.onInputDown, this);
+
+        // Change cursor on hover
+        this.prevCursor = "inherit";
+        this.structure.events.onInputOver.add(() => {
+            this.prevCursor = this.game.canvas.style.cursor;
+            this.game.canvas.style.cursor = "pointer";
+        }, this);
+        this.structure.events.onInputOut.add(() => this.game.canvas.style.cursor = this.prevCursor, this);
     }
 
     onInputDown(displayObject, pointer) {
