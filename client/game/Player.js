@@ -6,10 +6,6 @@ class Player extends Phaser.Group {
         this.debug = false;
         this.color = 0x3916a0;
         //this.outlineColor = 0x51efe7;
-        this.startingPoint = {
-            x: x,
-            y: y
-        };
         this.freeBuild = true;
         let _radius = 10;
         Object.defineProperty(this, "radius", {
@@ -42,18 +38,22 @@ class Player extends Phaser.Group {
             menu: Phaser.KeyCode.ESC
         });
         this.keys.menu.onUp.add(this.gameState.toggleGameMenu, this.gameState);
+
+        this.respawn(x, y);
+    }
+
+    respawn(x, y) {
+        if (this.player) {
+            this.player.destroy();
+        }
         
         // Player
-        this.player = this.createPlayerGraphics(this.startingPoint.x, this.startingPoint.y, this.radius);
+        this.player = this.createPlayerGraphics(x, y, this.radius);
 
         // Eat food
         this.player.body.onBeginContact.add(this.collisionHandler, this);
 
         this.updateEnergy();
-    }
-
-    respawn() {
-        console.log('rspawn');
     }
 
     collisionHandler(body) {

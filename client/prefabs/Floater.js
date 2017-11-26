@@ -9,12 +9,12 @@ class Floater extends Prefab {
         // Choose radius value
         this.minRadius = this.properties.radiusSpread ? this.properties.radiusSpread[0] : 0;
         this.maxRadius = this.properties.radiusSpread ? this.properties.radiusSpread[1] : 100;
-        this.radius = Math.ceil(game.math.linear(this.minRadius, this.maxRadius, this.spreadInterpolation));
+        this.radius = Math.ceil(this.game.math.linear(this.minRadius, this.maxRadius, this.spreadInterpolation));
 
         // Choose resource values
         const chooseResourceSpread = (acc, prop) => {
             let key = prop[0], min = prop[1][0], max = prop[1][1];
-            acc[key] = Math.ceil(game.math.linear(min, max, this.spreadInterpolation));
+            acc[key] = Math.ceil(this.game.math.linear(min, max, this.spreadInterpolation));
             return acc;
         };
         if (this.properties.resourceSpread) {

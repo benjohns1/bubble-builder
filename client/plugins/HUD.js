@@ -3,16 +3,45 @@ class HUD extends Phaser.Plugin {
     init(gameState, data) {
         this.gameState = gameState;
         this.prefabs = [];
+        this.bgs = [];
         this.data = data;
         this.margins = data.margins || { "top": 0, "left": 0, "right": 0, "bottom": 0 };
+        this.bgUpdateFrequency = 0.5;
 
         this.setup();
+    }
+
+    drawBackground(x, y, width, height, anchor = {"x": 0, "y": 0}) {
+
+        if (!this.data.background) {
+            return;
+        }
+        const color = Phaser.Color.hexToRGB(this.data.background.color  || "#ffffff");
+        const padding = this.data.background.padding || { "top": 0, "left": 0, "right": 0, "bottom": 0 };
+        
+        // Draw background
+        const g = new Phaser.Graphics(this.gameState.game);
+        g.beginFill(color, this.data.background.hasOwnProperty("alpha") ? this.data.background.alpha : 1);
+        g.drawRoundedRect(0, 0, width + padding.left + padding.right, height + padding.top + padding.bottom, this.data.background.cornerRadius || 1);
+        g.endFill();
+
+        // Adjust for anchors
+        x = this.game.math.linear(x - padding.left, x + padding.left, anchor.x);
+        y = this.game.math.linear(y - padding.top, y + padding.top, anchor.y);
+
+        // Create bg sprite
+        const sprite = this.gameState.game.add.sprite(x, y, g.generateTexture());
+        sprite.anchor.setTo(anchor.x, anchor.y);
+        return sprite;
     }
 
     setup() {
         // Destroy any existing HUD elements
         this.prefabs.forEach((prefab) => {
             prefab.destroy();
+        });
+        this.bgs.forEach((bg) => {
+            bg.destroy();
         });
 
         let cameraWidth = this.cameraWidth = this.gameState.game.camera.width;
@@ -96,16 +125,23 @@ class HUD extends Phaser.Plugin {
             this.populatedRegions[region] = {
                 contentHeight: 0,
                 contentWidth: 0,
-                prefabs: []
+                prefabs: [],
+                anchor: this.regions[region].defaultAnchor
             };
             for (let [prefabName, element] of Object.entries(regionElements)) {
                 if (element.properties.anchor === undefined) {
                     element.properties.anchor = this.regions[region].defaultAnchor;
                 }
                 let prefab = this.gameState.prefabFactory(element.prefabType, prefabName, 0, 0, element.properties);
+                if (prefab.onChange && prefab.onChange.add) {
+                    prefab.onChange.add(this.checkUpdate, this);
+                }
                 this.populatedRegions[region].prefabs.push(prefab);
-                this.populatedRegions[region].contentHeight += prefab.getMaxChildProperty('height');
-                this.populatedRegions[region].contentWidth += prefab.getMaxChildProperty('width');
+                this.populatedRegions[region].contentHeight += prefab.getHeight();
+                let currentWidth = prefab.getWidth();
+                if (currentWidth > this.populatedRegions[region].contentWidth) {
+                    this.populatedRegions[region].contentWidth = currentWidth;
+                }
                 this.prefabs.push(prefab);
             }
         }
@@ -140,13 +176,29 @@ class HUD extends Phaser.Plugin {
                     y = region.begin.y - regionData.contentHeight;
                     break;
             }
+            let bg = this.drawBackground(x, y, regionData.contentWidth, regionData.contentHeight, regionData.anchor);
+            bg.fixedToCamera = true;
+            this.bgs.push(bg);
             prefabs.forEach((prefab) => {
                 prefab.x = x;
                 prefab.y = y;
                 prefab.fixedToCamera = true;
                 y += prefab.getMaxChildProperty('height');
+                prefab.bringToTop();
             });
         }
+    }
+
+    checkUpdate() {
+        if (this.bgUpdateQueued) {
+            return;
+        }
+
+        this.bgUpdateQueued = true;
+        this.game.time.events.add(Phaser.Timer.SECOND * this.bgUpdateFrequency, () => {
+            this.setup();
+            this.bgUpdateQueued = false;
+        }, this);
     }
 
     render() {

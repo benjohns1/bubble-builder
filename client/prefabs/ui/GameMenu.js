@@ -3,8 +3,6 @@ class UI_GameMenu extends Prefab {
     constructor(gameState, name, x, y, properties) {
         super(gameState, name, x, y, properties);
 
-        this.realWidth = 0;
-
         // Set property defaults
         this.elementPadding = this.properties.elementPadding || { "x": 0, "y": 0 };
 
@@ -16,9 +14,9 @@ class UI_GameMenu extends Prefab {
         currentY += this.title.height + this.properties.elementPadding.y;
 
         // Respawn button
-        this.btnRespawn = this.gameState.uiFactory.textButton.create(this.properties.respawnLabel, this.gameState.player.respawn, this, 0, currentY);
+        this.btnRespawn = this.gameState.uiFactory.textButton.create(this.properties.respawnLabel, this.respawn, this, 0, currentY);
         this.addChild(this.btnRespawn);
-        currentY += this.btnRespawn.height + this.properties.elementPadding.y
+        currentY += this.btnRespawn.height + this.properties.elementPadding.y;
 
         // Resume button
         this.btnResume = this.gameState.uiFactory.textButton.create(this.properties.resumeLabel, this.close, this, 0, currentY);
@@ -31,6 +29,16 @@ class UI_GameMenu extends Prefab {
         });
 
         this.realHeight = currentY + this.btnResume.height;
+    }
+
+    respawn() {
+        this.openSubMenu(this.properties.respawnMenu);
+        this.close();
+    }
+
+    openSubMenu(displayData) {
+        this.gameState.subMenu.open(displayData);
+        this.gameState.subMenu.center();
     }
 
     close() {

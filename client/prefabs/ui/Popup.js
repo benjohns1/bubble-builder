@@ -5,16 +5,10 @@ class UI_Popup extends Prefab {
         // Set property defaults
         this.debug = this.properties.debug || false;
         this.dataPrefabs = [];
-        this.margins = this.properties.margins;
+        this.margins = this.properties.margins || { "top": 0, "right": 0, "bottom": 0, "left": 0 };
         this.showCloseButton = (this.properties.closeButtonSize && this.properties.closeButtonSize.x > 0);
         this.fixedToCamera = this.properties.fixedToCamera || false;
         this.opened = false;
-
-        // Preload (but hide) static display data, if supplied
-        if (this.properties.displayData) {
-            this.open(this.properties.displayData, x, y);
-            this.visible = false;
-        }
     }
 
     open(displayData, x = 0, y = 0) {

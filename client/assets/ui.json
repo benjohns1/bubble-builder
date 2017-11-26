@@ -60,7 +60,19 @@
                     "title": "Game Menu",
                     "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
                     "respawnLabel": "Respawn",
-                    "resumeLabel": "Back"
+                    "resumeLabel": "Back",
+                    "respawnMenu": {
+                        "menu": {
+                            "prefabType": "UI_RespawnMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Choose Respawn Location",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "randomLabel": "Random Location",
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    }
                 }
             }
         }
