@@ -10,7 +10,7 @@ class Player extends Phaser.Group {
             x: x,
             y: y
         };
-        this.freeBuild = false;
+        this.freeBuild = true;
         let _radius = 10;
         Object.defineProperty(this, "radius", {
             get: () => _radius,
@@ -33,13 +33,15 @@ class Player extends Phaser.Group {
         this.lastEnergyThreshold = 10;
 
         // Input bindings
-        this.wasdKeys = this.game.input.keyboard.addKeys({
+        this.keys = this.game.input.keyboard.addKeys({
             up: Phaser.KeyCode.W,
             down: Phaser.KeyCode.S,
             left: Phaser.KeyCode.A,
             right: Phaser.KeyCode.D,
-            brake: Phaser.KeyCode.SHIFT
+            brake: Phaser.KeyCode.SHIFT,
+            menu: Phaser.KeyCode.ESC
         });
+        this.keys.menu.onUp.add(this.gameState.toggleGameMenu, this.gameState);
         
         // Player
         this.player = this.createPlayerGraphics(this.startingPoint.x, this.startingPoint.y, this.radius);
@@ -48,6 +50,10 @@ class Player extends Phaser.Group {
         this.player.body.onBeginContact.add(this.collisionHandler, this);
 
         this.updateEnergy();
+    }
+
+    respawn() {
+        console.log('rspawn');
     }
 
     collisionHandler(body) {
@@ -169,7 +175,7 @@ class Player extends Phaser.Group {
 
         // Brake
         let speedMultiplier = 1.0;
-        if (this.wasdKeys.brake.isDown) {
+        if (this.keys.brake.isDown) {
             this.player.body.damping = 0.95;
             speedMultiplier = 0.5;
         }
@@ -178,16 +184,16 @@ class Player extends Phaser.Group {
         }
         
         // Movement controls
-        if (this.wasdKeys.left.isDown && !this.wasdKeys.right.isDown) {
+        if (this.keys.left.isDown && !this.keys.right.isDown) {
             this.player.body.moveLeft(this.speed * speedMultiplier);
         }
-        if (this.wasdKeys.right.isDown && !this.wasdKeys.left.isDown) {
+        if (this.keys.right.isDown && !this.keys.left.isDown) {
             this.player.body.moveRight(this.speed * speedMultiplier);
         }
-        if (this.wasdKeys.up.isDown && !this.wasdKeys.down.isDown) {
+        if (this.keys.up.isDown && !this.keys.down.isDown) {
             this.player.body.moveUp(this.speed * speedMultiplier);
         }
-        if (this.wasdKeys.down.isDown && !this.wasdKeys.up.isDown) {
+        if (this.keys.down.isDown && !this.keys.up.isDown) {
             this.player.body.moveDown(this.speed * speedMultiplier);
         }
     }

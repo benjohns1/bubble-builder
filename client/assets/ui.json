@@ -35,16 +35,34 @@
         }
     },
     "hover": {
-        "closeTextStyle": {
-            "font": "15px Arial",
-            "fill": "#ffffff"
-        },
         "cornerRadius": 2,
         "margins": {
             "left": 10,
             "right": 10,
             "top": 10,
             "bottom": 10
+        }
+    },
+    "menu": {
+        "cornerRadius": 10,
+        "margins": {
+            "left": 20,
+            "right": 20,
+            "top": 20,
+            "bottom": 20
+        },
+        "fixedToCamera": true,
+        "displayData": {
+            "menu": {
+                "prefabType": "UI_GameMenu",
+                "properties": {
+                    "elementPadding": { "x": 0, "y": 20 },
+                    "title": "Game Menu",
+                    "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                    "respawnLabel": "Respawn",
+                    "resumeLabel": "Back"
+                }
+            }
         }
     }
 }

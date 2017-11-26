@@ -59,6 +59,12 @@ class GameState extends Phaser.State {
         // Initialize hover-over window handler
         this.hoverWindow = this.prefabFactory("UI_Popup", "hoverWindow", 0, 0, this.assetData.ui.hover);
         this.popupWindow = this.prefabFactory("UI_Popup", "popupWindow", 0, 0, this.assetData.ui.popup);
+        this.gameMenu = this.prefabFactory("UI_Popup", "gameMenu", 0, 0, this.assetData.ui.menu);
+    }
+    
+    toggleGameMenu() {
+        this.gameMenu.visible = !this.gameMenu.visible;
+        this.gameMenu.center();
     }
 
     spawnResource(prefabType, name, properties) {
@@ -84,7 +90,8 @@ class GameState extends Phaser.State {
             Structure_Base,
             UI_Popup,
             UI_TextListener,
-            UI_ResourceTrader
+            UI_ResourceTrader,
+            UI_GameMenu
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);

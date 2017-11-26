@@ -7,9 +7,18 @@ class UI_Popup extends Prefab {
         this.dataPrefabs = [];
         this.margins = this.properties.margins;
         this.showCloseButton = (this.properties.closeButtonSize && this.properties.closeButtonSize.x > 0);
+        this.fixedToCamera = this.properties.fixedToCamera || false;
+        this.opened = false;
+
+        // Preload (but hide) static display data, if supplied
+        if (this.properties.displayData) {
+            this.open(this.properties.displayData, x, y);
+            this.visible = false;
+        }
     }
 
-    open(displayData, x = 0, y = 0, fixedToCamera = false) {
+    open(displayData, x = 0, y = 0) {
+
         // Reset any currently visible popups
         this.close();
         
@@ -61,6 +70,7 @@ class UI_Popup extends Prefab {
             }
             this.bg.addChild(prefab);
         });
+        this.opened = true;
     }
 
     refresh() {
@@ -97,6 +107,18 @@ class UI_Popup extends Prefab {
             this.closeButton.destroy();
         }
         delete this.displayData;
+        this.opened = false;
+    }
+
+    center() {
+        let fixedToCamera = false;
+        if (this.fixedToCamera) {
+            this.fixedToCamera = false;
+            fixedToCamera = true;
+        }
+        this.x = (this.game.camera.width / 2) - (this.bg.width / 2);
+        this.y = (this.game.camera.height / 2) - (this.bg.height / 2);
+        this.fixedToCamera = fixedToCamera;
     }
     
     static createBgGraphics(game, width, height, cornerRadius) {

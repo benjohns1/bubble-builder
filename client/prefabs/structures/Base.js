@@ -11,7 +11,7 @@ class Structure_Base extends Structure {
         this.resources = new Component_ResourceContainer(this, this.properties.initialResources, this.properties.resourceLimits);
         this.resources.onChange.add(this.updateDisplayData, this);
 
-        this.displayTitle = this.properties.title;
+        this.displayTitle = this.properties.title + " " + this.id;
         this.displayResources = {};
         this.updateDisplayData();
     }
