@@ -61,6 +61,8 @@
                     "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
                     "respawnLabel": "Respawn",
                     "resumeLabel": "Back",
+                    "saveLabel": "Save",
+                    "loadLabel": "Load",
                     "respawnMenu": {
                         "menu": {
                             "prefabType": "UI_RespawnMenu",

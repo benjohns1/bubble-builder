@@ -68,6 +68,14 @@ class GameState extends Phaser.State {
         // Dynamic submenu
         this.subMenu = this.prefabFactory("UI_Popup", "gameSubmenu", 0, 0, this.assetData.ui.menu);
     }
+
+    saveGame() {
+        console.log('save');
+    }
+    
+    loadGame() {
+        console.log('load');
+    }
     
     respawn(loc = undefined) {
 
@@ -82,16 +90,17 @@ class GameState extends Phaser.State {
             loc = new Phaser.Point(this.bases[loc].x - playerRadius - this.bases[loc].getWidth(), this.bases[loc].y + (this.bases[loc].getHeight() / 2));
         }
 
-        // (Re)spawn player
         if (!this.player) {
+            // Spawn new player
             this.player = new Player(this, loc.x, loc.y);
         }
         else {
+            // Respawn existing player
             this.player.respawn(loc.x, loc.y);
         }
 
         // Camera
-        this.game.camera.follow(this.player.player);
+        this.game.camera.follow(this.player);
     }
 
     getRandomWorldLocation(border = 0) {

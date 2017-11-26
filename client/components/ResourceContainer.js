@@ -3,21 +3,26 @@ class Component_ResourceContainer extends Component {
     constructor(parent, initialResources, limits, restrict = false) {
         super(parent);
         
+        // Change event
+        this.onChange = new Phaser.Signal();
+
         // Deep-copy initial resources to this instance (if restricted, only manages resources in initial list)
-        const resources = restrict ? {} : {
-            energy: 0,
-            green: 0,
-            red: 0,
-            purple: 0
-        };
-        Phaser.Utils.extend(true, resources, initialResources);
+        let resources = {};
+        this.reset = function(newResources, newRestrict = false) {
+            resources = newRestrict ? {} : {
+                energy: 0,
+                green: 0,
+                red: 0,
+                purple: 0
+            };
+            Phaser.Utils.extend(true, resources, newResources);
+            this.onChange.dispatch();
+        }
+        this.reset(initialResources, restrict);
 
         // Deep-copy any resourece limits
         this.limits = {};
         Phaser.Utils.extend(true, this.limits, limits);
-
-        // Change event
-        this.onChange = new Phaser.Signal();
 
         // Create public getter for each resource
         Object.keys(resources).map(resourceName => {

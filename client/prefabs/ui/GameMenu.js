@@ -17,6 +17,16 @@ class UI_GameMenu extends Prefab {
         this.btnRespawn = this.gameState.uiFactory.textButton.create(this.properties.respawnLabel, this.respawn, this, 0, currentY);
         this.addChild(this.btnRespawn);
         currentY += this.btnRespawn.height + this.properties.elementPadding.y;
+        
+        // Save button
+        this.btnSave = this.gameState.uiFactory.textButton.create(this.properties.saveLabel, this.save, this, 0, currentY);
+        this.addChild(this.btnSave);
+        currentY += this.btnSave.height + this.properties.elementPadding.y;
+        
+        // Load button
+        this.btnLoad = this.gameState.uiFactory.textButton.create(this.properties.loadLabel, this.load, this, 0, currentY);
+        this.addChild(this.btnLoad);
+        currentY += this.btnLoad.height + this.properties.elementPadding.y;
 
         // Resume button
         this.btnResume = this.gameState.uiFactory.textButton.create(this.properties.resumeLabel, this.close, this, 0, currentY);
@@ -29,6 +39,16 @@ class UI_GameMenu extends Prefab {
         });
 
         this.realHeight = currentY + this.btnResume.height;
+    }
+
+    save() {
+        this.gameState.saveGame();
+        this.close();
+    }
+    
+    load() {
+        this.gameState.loadGame();
+        this.close();
     }
 
     respawn() {

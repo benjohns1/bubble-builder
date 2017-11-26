@@ -1,13 +1,15 @@
-class Player extends Phaser.Group {
+class Player extends Prefab {
     
     constructor(gameState, x, y, debug) {
-        super(gameState.game);
+        super(gameState, "player", x, y, {});
+
         this.gameState = gameState;
         this.debug = false;
         this.color = 0x3916a0;
-        //this.outlineColor = 0x51efe7;
         this.freeBuild = true;
-        let _radius = 10;
+        this.allowMovement = true;
+        let _radius = 0;
+        this.onChange = new Phaser.Signal();
         Object.defineProperty(this, "radius", {
             get: () => _radius,
             set: value => {
@@ -17,16 +19,15 @@ class Player extends Phaser.Group {
                 _radius = value;
             }
         });
-        this.speed = 100;
-        this.damping = 0.5;
-        this.resources = new Component_ResourceContainer(this, {
+        this.lastEnergyThreshold = 0;
+        this.speed = 0;
+        this.damping = 0;
+        this.initialResources = {
             energy: 10
-        });
-
+        };
+        this.resources = new Component_ResourceContainer(this, this.initialResources);
+        this.init();
         this.resources.onChange.add(this.updateEnergy, this);
-        this.onChange = new Phaser.Signal();
-
-        this.lastEnergyThreshold = 10;
 
         // Input bindings
         this.keys = this.game.input.keyboard.addKeys({
@@ -38,22 +39,63 @@ class Player extends Phaser.Group {
             menu: Phaser.KeyCode.ESC
         });
         this.keys.menu.onUp.add(this.gameState.toggleGameMenu, this.gameState);
+        
+        // Create graphics and setup physics
+        this.player = Player.createGraphics(this.game, this.radius, this.color);
+        this.id = Player.setupPhysics(this.game, this, this.radius, this.damping, this.debug);
+        this.addChild(this.player);
 
-        this.respawn(x, y);
+        // Eat food
+        this.body.onBeginContact.add(this.collisionHandler, this);
+        
+        this.updateEnergy();
+    }
+
+    kill() {
+        console.log("player died");
+        // @TODO: drop all resources
+        console.log("drop loot", this.resources.list);
+        this.allowMovement = false;
     }
 
     respawn(x, y) {
-        if (this.player) {
-            this.player.destroy();
-        }
-        
-        // Player
-        this.player = this.createPlayerGraphics(x, y, this.radius);
+        this.kill();
+        this.init();
 
-        // Eat food
-        this.player.body.onBeginContact.add(this.collisionHandler, this);
+        this.body.x = x;
+        this.body.y = y;
+        this.allowMovement = true;
 
         this.updateEnergy();
+    }
+
+    init() {
+        this.resources.reset(this.initialResources);
+        this.radius = 10;
+        this.lastEnergyThreshold = 10;
+        this.speed = 100;
+        this.damping = 0.5;
+    }
+    
+    static createGraphics(game, radius, color) {
+
+        // Draw player
+        const g = new Phaser.Graphics(game);
+        g.beginFill(color);
+        g.drawCircle(0, 0, radius * 2);
+        g.endFill();
+
+        return g;
+    }
+
+    static setupPhysics(game, physicsObject, radius, damping, debug) {
+
+        // Enable physics
+        game.physics.p2.enableBody(physicsObject, debug);
+        physicsObject.body.setCircle(radius);
+        physicsObject.body.damping = damping;
+
+        return physicsObject.body.data.id;
     }
 
     collisionHandler(body) {
@@ -134,39 +176,15 @@ class Player extends Phaser.Group {
         this.displayEnergyThreshold = this.resources.energy + " / " + this.lastEnergyThreshold * 2;
     }
 
-    createPlayerGraphics(x, y, radius) {
-
-        // Draw player
-        const player = this.game.add.graphics(x, y);
-        //player.lineStyle(1, this.outlineColor);
-        player.beginFill(this.color);
-        player.drawCircle(0, 0, radius * 2);
-        player.endFill();
-        this.add(player);
-
-        this.setupPlayerPhysics(player, radius);
-        player.anchor.setTo(0.5);
-
-        return player;
-    }
-
-    setupPlayerPhysics(player, radius) {
-
-        // Enable physics
-        this.game.physics.p2.enableBody(player, this.debug);
-        player.body.setCircle(radius);
-        player.body.damping = this.damping;
-    }
-
     changeSize(multiplier) {
         const duration = 1000;
         const ease = Phaser.Easing.Sinusoidal.In;
 
         const newScale = this.player.scale.x * multiplier;
-        const newBodyRadius = this.player.body.data.shapes[0].radius * multiplier;
+        const newBodyRadius = this.body.data.shapes[0].radius * multiplier;
         const newRadius = this.radius * multiplier;
         this.game.add.tween(this.player.scale).to( { x: newScale, y: newScale }, duration, ease, true);
-        this.game.add.tween(this.player.body.data.shapes[0]).to( { radius: newBodyRadius }, duration, ease, true);
+        this.game.add.tween(this.body.data.shapes[0]).to( { radius: newBodyRadius }, duration, ease, true);
         this.game.add.tween(this).to( { radius: newRadius }, duration, ease, true);
         return newRadius;
     }
@@ -176,25 +194,29 @@ class Player extends Phaser.Group {
         // Brake
         let speedMultiplier = 1.0;
         if (this.keys.brake.isDown) {
-            this.player.body.damping = 0.95;
+            this.body.damping = 0.95;
             speedMultiplier = 0.5;
         }
         else {
-            this.player.body.damping = this.damping;
+            this.body.damping = this.damping;
+        }
+
+        if (!this.allowMovement) {
+            return;
         }
         
         // Movement controls
         if (this.keys.left.isDown && !this.keys.right.isDown) {
-            this.player.body.moveLeft(this.speed * speedMultiplier);
+            this.body.moveLeft(this.speed * speedMultiplier);
         }
         if (this.keys.right.isDown && !this.keys.left.isDown) {
-            this.player.body.moveRight(this.speed * speedMultiplier);
+            this.body.moveRight(this.speed * speedMultiplier);
         }
         if (this.keys.up.isDown && !this.keys.down.isDown) {
-            this.player.body.moveUp(this.speed * speedMultiplier);
+            this.body.moveUp(this.speed * speedMultiplier);
         }
         if (this.keys.down.isDown && !this.keys.up.isDown) {
-            this.player.body.moveDown(this.speed * speedMultiplier);
+            this.body.moveDown(this.speed * speedMultiplier);
         }
     }
 }
