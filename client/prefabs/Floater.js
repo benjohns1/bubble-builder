@@ -6,19 +6,34 @@ class Floater extends Prefab {
         // Interpolation value to choose between spread values
         this.spreadInterpolation = Math.random();
 
-        // Choose radius value
-        this.minRadius = this.properties.radiusSpread ? this.properties.radiusSpread[0] : 0;
-        this.maxRadius = this.properties.radiusSpread ? this.properties.radiusSpread[1] : 100;
-        this.radius = Math.ceil(this.game.math.linear(this.minRadius, this.maxRadius, this.spreadInterpolation));
+        // Set radius
+        if (this.properties.radius) {
+            this.radius = this.properties.radius; // explicitly set radius
+        }
+        else if (this.properties.radiusSpread) {
+            // Choose radius from possible spread values
+            this.minRadius = this.properties.radiusSpread ? this.properties.radiusSpread[0] : 0;
+            this.maxRadius = this.properties.radiusSpread ? this.properties.radiusSpread[1] : 100;
+            this.radius = Math.ceil(this.game.math.linear(this.minRadius, this.maxRadius, this.spreadInterpolation));
+        }
+        else {
+            this.radius = 10;
+            console.warn("No radius set for floater " + name);
+        }
 
-        // Choose resource values
+        // Set resource values
         const chooseResourceSpread = (acc, prop) => {
             let key = prop[0], min = prop[1][0], max = prop[1][1];
             acc[key] = Math.ceil(this.game.math.linear(min, max, this.spreadInterpolation));
             return acc;
         };
-        if (this.properties.resourceSpread) {
-            this.resources = new Component_ResourceContainer(this, Object.entries(this.properties.resourceSpread).reduce(chooseResourceSpread, {}));
+        this.resources = this.gameState.componentFactory("Component_ResourceContainer", this);
+        if (this.properties.resources) {
+            this.resources.reset(this.properties.resources);
+        }
+        else if (this.properties.resourceSpread) {
+            // Choose a resource value from the spread
+            this.resources.reset(Object.entries(this.properties.resourceSpread).reduce(chooseResourceSpread, {}));
         }
 
         // Set property defaults
@@ -30,6 +45,17 @@ class Floater extends Prefab {
         this.floater = Floater.createGraphics(this.game, this.radius,this.color);
         this.id = Floater.setupPhysics(this.game, this, this.radius, this.damping, this.debug);
         this.addChild(this.floater);
+    }
+    
+    getState() {
+        const state = super.getState();
+
+        // Add current properties, for serialization
+        Phaser.Utils.extend(true, state.factoryArgs.properties, {
+            "radius": this.radius,
+            "resources": this.resources.list
+        });
+        return state;
     }
     
     static createGraphics(game, radius, color) {

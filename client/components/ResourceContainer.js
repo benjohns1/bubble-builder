@@ -8,6 +8,7 @@ class Component_ResourceContainer extends Component {
 
         // Deep-copy initial resources to this instance (if restricted, only manages resources in initial list)
         let resources = {};
+        this.restrict = restrict;
         this.reset = function(newResources, newRestrict = false) {
             resources = newRestrict ? {} : {
                 energy: 0,
@@ -129,8 +130,9 @@ class Component_ResourceContainer extends Component {
             return false;
         }
         resourceList.forEach(resource => {
-            if (this.remove(resource[0], resource[1]) !== resource[1]) {
-                throw new Exception("Error removing resource " + JSON.stringify(resource));
+            let val = this.remove(resource[0], resource[1])
+            if (val !== resource[1]) {
+                throw new Exception("Error removing resource " + JSON.stringify(resource) + " " + val);
             }
         });
         return true;

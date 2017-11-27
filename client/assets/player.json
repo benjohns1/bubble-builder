@@ -1,0 +1,14 @@
+{
+    "init": {
+        "prefabType": "Player",
+        "properties": {
+            "color": "#ffff00",
+            "initialResources": {
+                "energy": 10
+            },
+            "speed": 100,
+            "damping": 0.5,
+            "freeBuild": true
+        }
+    }
+}

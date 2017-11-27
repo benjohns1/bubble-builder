@@ -1,12 +1,11 @@
 class Player extends Prefab {
     
-    constructor(gameState, x, y, debug) {
-        super(gameState, "player", x, y, {});
+    constructor(gameState, name, x, y, properties) {
+        super(gameState, name, x, y, properties);
 
-        this.gameState = gameState;
-        this.debug = false;
-        this.color = 0x3916a0;
-        this.freeBuild = true;
+        this.debug = this.properties.debug || false;
+        this.color = Phaser.Color.hexToRGB(properties.color || "#3916a0");;
+        this.freeBuild = this.properties.hasOwnProperty("freeBuild") ? this.properties.freeBuild : false;
         this.allowMovement = true;
         let _displaySize = 0;
         this.onChange = new Phaser.Signal();
@@ -52,10 +51,7 @@ class Player extends Prefab {
             return Math.pow(this.sizeCurve.multiplier * (x + this.sizeCurve.xOffset), this.sizeCurve.exp) + this.sizeCurve.yOffset;
         };
 
-        this.initialResources = {
-            energy: 10
-        };
-        this.resources = new Component_ResourceContainer(this);
+        this.resources = this.gameState.componentFactory("Component_ResourceContainer", this);
         this.init();
         this.resources.onChange.add(this.updateEnergy, this);
 
@@ -71,14 +67,14 @@ class Player extends Prefab {
         this.keys.menu.onUp.add(this.gameState.toggleGameMenu, this.gameState);
         
         // Create graphics and setup physics
-        this.player = Player.createGraphics(this.game, this.radius, this.color);
-        this.id = Player.setupPhysics(this.game, this, this.radius, this.damping, this.debug);
+        this.player = Player.createGraphics(this.game, this.baseSize, this.color);
+        this.id = Player.setupPhysics(this.game, this, this.baseSize, this.damping, this.debug);
         this.addChild(this.player);
 
         // Eat food
         this.body.onBeginContact.add(this.collisionHandler, this);
         
-        this.updateEnergy(false);
+        this.updateEnergy(false, true);
     }
 
     kill() {
@@ -86,11 +82,15 @@ class Player extends Prefab {
         // @TODO: drop all resources
         console.log("drop loot", this.resources.list);
         this.allowMovement = false;
+
+        // Reset properties to clean state for re-initialization
+        delete this.properties.resources;
     }
 
     respawn(x, y) {
         this.kill();
-        this.init();
+        this.init(true);
+        this.updateEnergy(false, true);
 
         this.body.x = x;
         this.body.y = y;
@@ -99,13 +99,27 @@ class Player extends Prefab {
 
     init() {
         this.updateSizeImmediately = true;
-        this.resources.reset(this.initialResources);
+        this.initialResources = this.properties.hasOwnProperty("initialResources") ? this.properties.initialResources : {
+            energy: 10
+        };
+        let resources = this.properties.hasOwnProperty("resources") ? this.properties.resources : this.initialResources;
+        this.resources.reset(resources);
         this.updateSizeImmediately = false;
-        this.speed = 100;
-        this.damping = 0.5;
-        this.size = this.displaySize = 1;
-        this.radius = this.size * 10;
+        this.speed = this.properties.hasOwnProperty("speed") ? this.properties.speed : 100;
+        this.damping = this.properties.hasOwnProperty("damping") ? this.properties.damping : 0.5;
         this.updateThreshold();
+    }
+    
+    getState() {
+        const state = super.getState();
+
+        // Add current properties, for serialization
+        Phaser.Utils.extend(true, state.factoryArgs.properties, {
+            "resources": this.resources.list,
+            "speed": this.speed,
+            "damping": this.damping
+        });
+        return state;
     }
     
     static createGraphics(game, radius, color) {
@@ -136,7 +150,7 @@ class Player extends Prefab {
         }
 
         // Check for floater collision
-        this.floaterCollisionHandler(body);
+        this.floaterCollisionHandler(body.data.id);
     }
 
     buildStructure(name, x, y) {
@@ -157,23 +171,24 @@ class Player extends Prefab {
         return this.gameState.spawnStructure(structureData.prefabType, name, x, y, structureData.properties);
     }
 
-    floaterCollisionHandler(body) {
-        if (!this.gameState.floaters[body.data.id]) {
+    floaterCollisionHandler(id) {
+
+        // Find floater by physics body ID
+        let floaterIndex = this.gameState.getFloaterIndex(id);        
+        if (floaterIndex === undefined) {
             return false;
         }
 
-        let floater = this.gameState.floaters[body.data.id];
+        let floater = this.gameState.floaters[floaterIndex];
         if (floater.radius < this.radius && floater.resources) {
             this.resources.takeAllFrom(floater.resources);
     
             // Destroy floater
-            this.gameState.removeFloater(floater.id);
-            floater.destroy();
-            floater = null;
+            this.gameState.removeFloater(floaterIndex);
         }
     }
 
-    updateEnergy(animate = true) {
+    updateEnergy(animate = true, force = false) {
         
         // Check if energy is less than 0
         if (this.resources.energy <= 0) {
@@ -184,7 +199,7 @@ class Player extends Prefab {
         const exactSize = this.levelCurve.run(this.resources.energy);
         const newSize = Math.floor(exactSize); // Floor to nearest integer
 
-        if (this.size === newSize) {
+        if (!force && this.size === newSize) {
             // Size didn't change, just update display energy and return
             this.displayEnergyThreshold = this.resources.energy + " / " + this.nextEnergyThreshold;
             return;

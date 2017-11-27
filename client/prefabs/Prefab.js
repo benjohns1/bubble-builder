@@ -19,6 +19,9 @@ class Prefab extends Phaser.Sprite {
         }
 
         this.game.add.existing(this);
+
+        // State save/load settings
+        this.saveFields = []; // additional basic fields to serialize
     }
 
     loadDisplayData() {
@@ -57,5 +60,42 @@ class Prefab extends Phaser.Sprite {
             }
             return maxValue;
         }, 0);
+    }
+
+    getState() {
+
+        const state = {
+            "factoryArgs": {
+                "prefabType": this.constructor.name,
+                "name": this.name,
+                "x": this.x,
+                "y": this.y,
+                "properties": {}
+            },
+            "fields": {}
+        };
+        Phaser.Utils.extend(true, state.factoryArgs.properties, this.properties);
+
+        // Serialize basic fields
+        for (let i in this.serializeFields) {
+            let key = this.serializeFields[i];
+            state.fields[key] = this[key];
+        }
+
+        return state;
+    }
+
+    static loadFromState(gameState, state) {
+        const args = state.factoryArgs;
+
+        // Instantiate prefab class
+        const instance = gameState.prefabFactory(args.prefabType, args.name, args.x, args.y, args.properties);
+
+        // Deserialize basic fields
+        for (let i in state.fields) {
+            instance[i] = state.fields[i];
+        }
+
+        return instance;
     }
 }

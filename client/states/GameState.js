@@ -4,7 +4,7 @@ class GameState extends Phaser.State {
         super();
         this.width = 5000;
         this.height = 5000;
-        this.floaters = {};
+        this.floaters = [];
         this.structures = {};
         this.bases = {};
         this.debug = false;
@@ -49,7 +49,7 @@ class GameState extends Phaser.State {
         
         // Player
         this.respawn();
-        
+
         // Initialize the HUD plugin
         this.hud = this.game.plugins.add(HUD, this, this.assetData.hud);
 
@@ -70,11 +70,45 @@ class GameState extends Phaser.State {
     }
 
     saveGame() {
-        console.log('save');
+        console.log('save', this.player);
+        const save = {
+            "player": this.player.getState(),
+            "floaters": []
+        };
+        for (let i in this.floaters) {
+            let floater = this.floaters[i].getState();
+            console.log(floater.factoryArgs.properties.radius);
+            save.floaters.push(floater);
+        }
+        console.log(save.floaters);
+
+        this.saveData = JSON.stringify(save);
     }
     
     loadGame() {
         console.log('load');
+        const load = JSON.parse(this.saveData);
+        console.log(load);
+
+        // Clear existing and load floaters
+        for (let i in this.floaters) {
+            this.floaters[i].destroy();
+        }
+        this.floaters = [];
+        for (let i in load.floaters) {
+            let floater = Prefab.loadFromState(this, load.floaters[i]);
+            this.floaters.push(floater);
+        }
+
+        // Clear existing and load player
+        if (this.player) {
+            this.player.destroy();
+        }
+        this.player = Prefab.loadFromState(this, load.player);
+        this.game.camera.follow(this.player);
+        this.hud.setup();
+
+        console.log('player', this.player);
     }
     
     respawn(loc = undefined) {
@@ -92,7 +126,7 @@ class GameState extends Phaser.State {
 
         if (!this.player) {
             // Spawn new player
-            this.player = new Player(this, loc.x, loc.y);
+            this.player = this.prefabFactory(this.assetData.player.init.prefabType, 'player', loc.x, loc.y, this.assetData.player.init.properties);
         }
         else {
             // Respawn existing player
@@ -122,7 +156,7 @@ class GameState extends Phaser.State {
         let y = this.game.math.between(0, this.game.world.height);
         let prefab = this.prefabFactory(prefabType, name, x, y, properties);
         if (prefabType === "Floater") {
-            this.floaters[prefab.id] = prefab;
+            this.floaters.push(prefab);
         }
         return prefab;
     }
@@ -136,8 +170,9 @@ class GameState extends Phaser.State {
         return prefab;
     }
 
-    prefabFactory(prefabType, name, x, y, properties) {
+    prefabFactory(prefabType, name, x, y, properties = {}) {
         const prefabs = {
+            Player,
             Floater,
             BuildIcon,
             Structure_Base,
@@ -153,9 +188,32 @@ class GameState extends Phaser.State {
         return new prefabs[prefabType](this, name, x, y, properties);
     }
 
-    removeFloater(floaterId) {
-        let floater = this.floaters[floaterId];
+    componentFactory(componentType, parent) {
+        const components = {
+            Component_ResourceContainer
+        };
+        if (!components.hasOwnProperty(componentType)) {
+            throw new Exception("No component found with type: " + componentType);
+        }
+        const args = Array.prototype.slice.call(arguments).slice(2);
+        return new components[componentType](parent, ...args);
+    }
+
+    removeFloater(floaterIndex) {
+        let floater = this.floaters[floaterIndex];
         this.spawnResource(floater.constructor.name, floater.name, this.assetData.resources[floater.name].properties);
-        delete this.floaters[floaterId];
+        delete this.floaters[floaterIndex];
+        floater.destroy();
+    }
+
+    getFloaterIndex(physicsBodyId) {
+        let floaterIndex = undefined;
+        for (let i in this.floaters) {
+            if (this.floaters[i].id === physicsBodyId) {
+                floaterIndex = i;
+                break;
+            }
+        }
+        return floaterIndex;
     }
 }

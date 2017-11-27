@@ -57,7 +57,7 @@ class UI_ResourceTrader extends Prefab {
     }
 
     resourcesUpdated() {
-        if (!this.currentResource) {
+        if (!this.currentResource || !this.player.resources) {
             return;
         }
         const takeAmountValue = this.source.resources[this.currentResource];
@@ -71,14 +71,14 @@ class UI_ResourceTrader extends Prefab {
     }
 
     takeResource() {
-        if (!this.currentResource || this.takeAmount <= 0) {
+        if (!this.currentResource || this.takeAmount <= 0 || !this.player.resources) {
             return;
         }
         this.player.resources.takeFrom(this.source.resources, this.currentResource, this.takeAmount.value);
     }
     
     giveResource() {
-        if (!this.currentResource || this.giveAmount <= 0) {
+        if (!this.currentResource || this.giveAmount <= 0 || !this.player.resources) {
             return;
         }
         this.source.resources.takeFrom(this.player.resources, this.currentResource, this.giveAmount.value);
