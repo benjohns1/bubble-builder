@@ -24,7 +24,7 @@
                     "group": "hud",
                     "context": [ "player" ],
                     "signal": [ "onChange" ],
-                    "property": [ "radius" ],
+                    "property": [ "displaySize" ],
                     "valueFormat": {
                         "methodName": "toFixed",
                         "args": [1]

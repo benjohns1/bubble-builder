@@ -8,24 +8,54 @@ class Player extends Prefab {
         this.color = 0x3916a0;
         this.freeBuild = true;
         this.allowMovement = true;
-        let _radius = 0;
+        let _displaySize = 0;
         this.onChange = new Phaser.Signal();
-        Object.defineProperty(this, "radius", {
-            get: () => _radius,
+        Object.defineProperty(this, "displaySize", {
+            get: () => _displaySize,
             set: value => {
-                if (value !== _radius) {
+                const changed = (value !== _displaySize);
+                _displaySize = value;
+                if (changed) {
                     this.onChange.dispatch();
                 }
-                _radius = value;
             }
         });
-        this.lastEnergyThreshold = 0;
-        this.speed = 0;
-        this.damping = 0;
+
+        // Level energy => size curve
+        this.levelCurve = {
+            "xOffset": 4,
+            "yOffset": 0,
+            "multiplier": 3,
+            "exp": 3
+        };
+        this.levelCurve.root = 1.0 / this.levelCurve.exp;
+        this.levelCurve.run = (x) => {
+            // ( ((x + xOffset) / multiplier) ^ (1/exp) ) + yOffset
+            return Math.pow((x + this.levelCurve.xOffset) / this.levelCurve.multiplier, this.levelCurve.root) + this.levelCurve.yOffset;
+        };
+        this.levelCurve.reverse = (x) => {
+            // Opposite of levelCurve run function
+            // multiplier * ((x - yOffset) ^ exp) - xOffset
+            return this.levelCurve.multiplier * Math.pow(x - this.levelCurve.yOffset, this.levelCurve.exp) - this.levelCurve.xOffset;
+        };
+
+        this.baseSize = 10;
+        // Player size => size scalar curve
+        this.sizeCurve = {
+            "xOffset": -1,
+            "yOffset": 1,
+            "multiplier": 1,
+            "exp": 0.7
+        };
+        this.sizeCurve.run = (x) => {
+            // ( (multiplier * (x + xOffset)) ^ exp ) + yOffset
+            return Math.pow(this.sizeCurve.multiplier * (x + this.sizeCurve.xOffset), this.sizeCurve.exp) + this.sizeCurve.yOffset;
+        };
+
         this.initialResources = {
             energy: 10
         };
-        this.resources = new Component_ResourceContainer(this, this.initialResources);
+        this.resources = new Component_ResourceContainer(this);
         this.init();
         this.resources.onChange.add(this.updateEnergy, this);
 
@@ -48,7 +78,7 @@ class Player extends Prefab {
         // Eat food
         this.body.onBeginContact.add(this.collisionHandler, this);
         
-        this.updateEnergy();
+        this.updateEnergy(false);
     }
 
     kill() {
@@ -65,16 +95,17 @@ class Player extends Prefab {
         this.body.x = x;
         this.body.y = y;
         this.allowMovement = true;
-
-        this.updateEnergy();
     }
 
     init() {
+        this.updateSizeImmediately = true;
         this.resources.reset(this.initialResources);
-        this.radius = 10;
-        this.lastEnergyThreshold = 10;
+        this.updateSizeImmediately = false;
         this.speed = 100;
         this.damping = 0.5;
+        this.size = this.displaySize = 1;
+        this.radius = this.size * 10;
+        this.updateThreshold();
     }
     
     static createGraphics(game, radius, color) {
@@ -142,51 +173,67 @@ class Player extends Prefab {
         }
     }
 
-    updateEnergy() {
+    updateEnergy(animate = true) {
         
         // Check if energy is less than 0
-        if (this.resources.energy < 0) {
-            console.warn('game over');
+        if (this.resources.energy <= 0) {
+            this.kill();
         }
 
-        // Check if grow/shrink threshold has been crossed
-        let multiplier = 1.0;
-        let updateThreshold = function(self) {
-            if (self.resources.energy >= self.lastEnergyThreshold * 2) {
-                multiplier *= 1.25;
-                self.lastEnergyThreshold *= 2;
-                return true;
-            }
-            else if (self.resources.energy < self.lastEnergyThreshold / 2) {
-                multiplier *= 0.8;
-                self.lastEnergyThreshold /= 2;
-                return true;
-            }
-            return false;
+        // Find exact size from curve
+        const exactSize = this.levelCurve.run(this.resources.energy);
+        const newSize = Math.floor(exactSize); // Floor to nearest integer
+
+        if (this.size === newSize) {
+            // Size didn't change, just update display energy and return
+            this.displayEnergyThreshold = this.resources.energy + " / " + this.nextEnergyThreshold;
+            return;
         }
-
-        while (updateThreshold(this)) {} // keep updating threshold until it's done
-
-        // Change player size if needed
-        if (this.game.math.roundTo(multiplier, -1) != 1.0) {
-            this.changeSize(multiplier);
-        }
-
-        // Update stat display
-        this.displayEnergyThreshold = this.resources.energy + " / " + this.lastEnergyThreshold * 2;
+        
+        // Change player size
+        this.setSize(newSize, animate);
     }
 
-    changeSize(multiplier) {
-        const duration = 1000;
-        const ease = Phaser.Easing.Sinusoidal.In;
+    updateThreshold() {
+        this.nextEnergyThreshold = this.levelCurve.reverse(this.size + 1);
+    }
 
-        const newScale = this.player.scale.x * multiplier;
-        const newBodyRadius = this.body.data.shapes[0].radius * multiplier;
-        const newRadius = this.radius * multiplier;
-        this.game.add.tween(this.player.scale).to( { x: newScale, y: newScale }, duration, ease, true);
-        this.game.add.tween(this.body.data.shapes[0]).to( { radius: newBodyRadius }, duration, ease, true);
-        this.game.add.tween(this).to( { radius: newRadius }, duration, ease, true);
-        return newRadius;
+    setSize(newSize, animate = true) {
+        this.size = newSize;
+
+        // Update threshold to next level
+        this.updateThreshold();
+        this.displayEnergyThreshold = this.resources.energy + " / " + this.nextEnergyThreshold;
+
+        // Check whether to skip animation
+        animate = this.updateSizeImmediately ? false : animate;
+        this.updateSizeImmediately = false;
+        
+        // Run size curve
+        const scalar = this.sizeCurve.run(newSize);
+
+        // Calculate new scale and radii for components
+        const newScale = { x: scalar, y: scalar }
+        const newRadius = this.baseSize * scalar;
+        const newBodyRadius = 0.05 * newRadius; // Adjust for different P2 physics unit
+
+        if (animate) {
+            // Animation tween
+            const duration = 1000;
+            const ease = Phaser.Easing.Sinusoidal.In;
+
+            this.game.add.tween(this.player.scale).to( newScale, duration, ease, true);
+            this.game.add.tween(this).to( { displaySize: newSize } , duration, ease, true);
+            this.game.add.tween(this).to( { radius: newRadius } , duration, ease, true);
+            this.game.add.tween(this.body.data.shapes[0]).to( { radius: newBodyRadius }, duration, ease, true);
+        }
+        else {
+            // Set immediately
+            this.player.scale = newScale;
+            this.displaySize = newSize;
+            this.radius = newRadius;
+            this.body.data.shapes[0].radius = newBodyRadius;
+        }
     }
 
     update() {

@@ -17,7 +17,7 @@
                 "energy": 0
             },
             "resourceLimits": {
-                "energy": [0,200]
+                "energy": [0,500]
             },
             "displayData": {
                 "title": {
