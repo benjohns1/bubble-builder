@@ -1,7 +1,7 @@
 class Player extends Prefab {
     
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
 
         this.debug = this.properties.debug || false;
         this.color = Phaser.Color.hexToRGB(properties.color || "#3916a0");;
@@ -68,7 +68,7 @@ class Player extends Prefab {
         
         // Create graphics and setup physics
         this.player = Player.createGraphics(this.game, this.baseSize, this.color);
-        this.id = Player.setupPhysics(this.game, this, this.baseSize, this.damping, this.debug);
+        this.physicsId = Player.setupPhysics(this.game, this, this.baseSize, this.damping, this.debug);
         this.addChild(this.player);
 
         // Eat food
@@ -77,10 +77,10 @@ class Player extends Prefab {
         this.updateEnergy(false, true);
     }
 
-    kill() {
-        console.log("player died");
-        // @TODO: drop all resources
-        console.log("drop loot", this.resources.list);
+    kill(deathMessage = "You died") {
+        this.gameState.notify.death(deathMessage);
+        
+        this.gameState.spawnPlayerCorpse(this); // drop all resources
         this.allowMovement = false;
 
         // Reset properties to clean state for re-initialization
@@ -168,23 +168,22 @@ class Player extends Prefab {
         }
 
         // Spawn structure
-        return this.gameState.spawnStructure(structureData.prefabType, name, x, y, structureData.properties);
+        return this.gameState.prefabFactory(structureData.prefabType, name, x, y, structureData.properties);
     }
 
-    floaterCollisionHandler(id) {
+    floaterCollisionHandler(physicsId) {
 
         // Find floater by physics body ID
-        let floaterIndex = this.gameState.getFloaterIndex(id);        
-        if (floaterIndex === undefined) {
+        let floater = this.gameState.getFloater(physicsId);        
+        if (floater === undefined) {
             return false;
         }
 
-        let floater = this.gameState.floaters[floaterIndex];
         if (floater.radius < this.radius && floater.resources) {
             this.resources.takeAllFrom(floater.resources);
     
             // Destroy floater
-            this.gameState.removeFloater(floaterIndex);
+            this.gameState.removeFloater(floater.id);
         }
     }
 

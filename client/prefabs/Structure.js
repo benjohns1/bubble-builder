@@ -1,7 +1,7 @@
 class Structure extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
         super.loadDisplayData();
 
         // Set property defaults
@@ -10,7 +10,7 @@ class Structure extends Prefab {
 
         // Create graphics and setup physics
         this.structure = this.constructor.createGraphics(this.game, this.anchor, this.properties.width, this.properties.height, this.color);
-        this.id = this.constructor.setupPhysics(this.game, this, this.properties.width, this.properties.height, this.debug);
+        this.physicsId = this.constructor.setupPhysics(this.game, this, this.properties.width, this.properties.height, this.debug);
         this.addChild(this.structure);
 
         // Enable input for this structure

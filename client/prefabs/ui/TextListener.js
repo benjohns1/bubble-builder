@@ -1,7 +1,7 @@
 class UI_TextListener extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
 
         if (!this.properties.hasOwnProperty("textStyle")) {
             this.properties.textStyle =  {

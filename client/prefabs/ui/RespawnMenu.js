@@ -1,7 +1,7 @@
 class UI_RespawnMenu extends Prefab {
     
-        constructor(gameState, name, x, y, properties) {
-            super(gameState, name, x, y, properties);
+        constructor(gameState, name, x, y, properties, id) {
+            super(gameState, name, x, y, properties, id);
     
             // Set property defaults
             this.elementPadding = this.properties.elementPadding || { "x": 0, "y": 0 };
@@ -14,9 +14,9 @@ class UI_RespawnMenu extends Prefab {
             currentY += this.title.height + this.properties.elementPadding.y;
 
             // Create respawn button for each player base
-            if (this.gameState.bases) {
-                for (let id in this.gameState.bases) {
-                    let base = this.gameState.bases[id];
+            if (this.gameState.structures.bases) {
+                for (let id in this.gameState.structures.bases) {
+                    let base = this.gameState.structures.bases[id];
                     let btnRespawn = this.gameState.uiFactory.textButton.create(base.displayTitle, () => {
                         this.gameState.respawn(id);
                         this.gameState.subMenu.close();

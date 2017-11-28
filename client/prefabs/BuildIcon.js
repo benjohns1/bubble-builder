@@ -1,7 +1,7 @@
 class BuildIcon extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
 
         // Get structure properties
         this.buildStructureData = this.gameState.assetData.structures[this.properties.structureName];

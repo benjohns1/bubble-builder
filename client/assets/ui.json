@@ -63,6 +63,7 @@
                     "resumeLabel": "Back",
                     "saveLabel": "Save",
                     "loadLabel": "Load",
+                    "restartLabel": "Restart Game",
                     "respawnMenu": {
                         "menu": {
                             "prefabType": "UI_RespawnMenu",
@@ -72,6 +73,18 @@
                                 "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
                                 "randomLabel": "Random Location",
                                 "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
+                    "restartMenu": {
+                        "menu": {
+                            "prefabType": "UI_ConfirmDialog",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Really start over? All saved progress will be lost",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "confirmLabel": "Restart",
+                                "cancelLabel": "Cancel"
                             }
                         }
                     }

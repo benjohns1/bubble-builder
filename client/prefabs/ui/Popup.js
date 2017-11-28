@@ -1,7 +1,7 @@
 class UI_Popup extends Prefab {
 
-    constructor(gameState, name, x, y, properties = {}) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties = {}, id = undefined) {
+        super(gameState, name, x, y, properties, id);
         // Set property defaults
         this.debug = this.properties.debug || false;
         this.dataPrefabs = [];
@@ -58,13 +58,21 @@ class UI_Popup extends Prefab {
         }
 
         this.dataPrefabs.map(prefab => {
-            if (prefab.onChange && prefab.onChange.add) {
+            if (prefab.hasOwnProperty("onChange") && prefab.onChange instanceof Phaser.Signal) {
                 // Refresh popup window if any content changes
                 prefab.onChange.add(this.refresh, this);
             }
             this.bg.addChild(prefab);
         });
         this.opened = true;
+    }
+
+    listen(event, callback, context) {
+        this.dataPrefabs.map(prefab => {
+            if (prefab.hasOwnProperty(event) && prefab[event] instanceof Phaser.Signal) {
+                prefab[event].add(callback, context);
+            }
+        });
     }
 
     refresh() {

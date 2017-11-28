@@ -1,7 +1,7 @@
 class UI_GameMenu extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
 
         // Set property defaults
         this.elementPadding = this.properties.elementPadding || { "x": 0, "y": 0 };
@@ -12,6 +12,11 @@ class UI_GameMenu extends Prefab {
         this.title = new Phaser.Text(this.gameState.game, 0, currentY, this.properties.title, this.properties.titleStyle);
         this.addChild(this.title);
         currentY += this.title.height + this.properties.elementPadding.y;
+
+        // Restart button
+        this.btnRestart = this.gameState.uiFactory.textButton.create(this.properties.restartLabel, this.confirmRestart, this, 0, currentY);
+        this.addChild(this.btnRestart);
+        currentY += this.btnRestart.height + this.properties.elementPadding.y;
 
         // Respawn button
         this.btnRespawn = this.gameState.uiFactory.textButton.create(this.properties.respawnLabel, this.respawn, this, 0, currentY);
@@ -49,6 +54,16 @@ class UI_GameMenu extends Prefab {
     load() {
         this.gameState.loadGame();
         this.close();
+    }
+
+    confirmRestart() {
+        this.openSubMenu(this.properties.restartMenu);
+        this.gameState.subMenu.listen("onConfirm", this.restart, this);
+        this.close();
+    }
+
+    restart() {
+        this.gameState.restart();
     }
 
     respawn() {

@@ -6,7 +6,7 @@
             "initialResources": {
                 "energy": 10
             },
-            "speed": 100,
+            "speed": 250,
             "damping": 0.5,
             "freeBuild": true
         }

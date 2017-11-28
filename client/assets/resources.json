@@ -35,5 +35,30 @@
                 "purple": [0, 2]
             }
         }
+    },
+    "floaterWhite": {
+        "prefabType": "Floater",
+        "count": 5,
+        "properties": {
+            "radiusSpread": [50, 70],
+            "color": "#ffffff",
+            "resourceSpread": {
+                "energy": [500,2000],
+                "green": [50,200],
+                "red": [30,100],
+                "purple": [5,30]
+            }
+        }
+    },
+    "floaterCorpse": {
+        "prefabType": "Floater",
+        "count": 0,
+        "properties": {
+            "radius": 10,
+            "color": "#000000",
+            "resources": {
+                "energy": 100
+            }
+        }
     }
 }

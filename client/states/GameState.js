@@ -4,13 +4,54 @@ class GameState extends Phaser.State {
         super();
         this.width = 5000;
         this.height = 5000;
-        this.floaters = [];
-        this.structures = {};
-        this.bases = {};
+        this.floaters = {};
+        this.structures = {
+            "bases": {}
+        };
         this.debug = false;
         this.uiFactory = {};
 
-        this.groups = {};
+        // For generating and registering unique keys across game state
+        this.keys = {};
+        this.keyNonce = 0;
+        this.keyGen = {
+            get: () => {
+                while (this.keys.hasOwnProperty(this.keyNonce)) {
+                    this.keyNonce++;
+                }
+                this.keys[this.keyNonce] = true;
+                return this.keyNonce;
+            },
+            add: key => {
+                if (this.keys[key]) {
+                    throw new Exception("Key '" + key + "' already in use");
+                }
+                this.keys[key] = true;
+            },
+            free: key => {
+                delete this.keys[key];
+            },
+            used: key => {
+                return !!this.keys[key];
+            }
+        };
+
+        // Notifications
+        this.notify = {
+            // @TODO: usein-game notification dialog
+            error: function(text) {
+                console.error("Error: " + text);
+            },
+            warn: function(text) {
+                console.warn("Warn: " + text);
+            },
+            info: function(text) {
+                console.log("Info: " + text);
+            },
+            death: function(text) {
+                console.log(text);
+            }
+        }
     }
 
     init(assetData) {
@@ -40,7 +81,7 @@ class GameState extends Phaser.State {
         // Spawn resources
         const spawnResources = data => {
             let name = data[0], resource = data[1];
-            let count = resource.count || 1;
+            let count = resource.count || 0;
             for (let i = 0; i < count; i++) {
                 this.spawnResource(resource.prefabType, name, resource.properties);
             }
@@ -67,61 +108,119 @@ class GameState extends Phaser.State {
         
         // Dynamic submenu
         this.subMenu = this.prefabFactory("UI_Popup", "gameSubmenu", 0, 0, this.assetData.ui.menu);
+
+        // If savegame exists, load it
+        try {
+            this.loadGame();
+        }
+        catch (err) {
+            this.notify.error("Could not load previously saved game: " + err.message);
+        }
     }
 
     saveGame() {
-        console.log('save', this.player);
         const save = {
             "player": this.player.getState(),
-            "floaters": []
+            "floaters": {},
+            "structures": {}
         };
         for (let i in this.floaters) {
             let floater = this.floaters[i].getState();
-            console.log(floater.factoryArgs.properties.radius);
-            save.floaters.push(floater);
+            save.floaters[i] = floater;
         }
-        console.log(save.floaters);
+        for (let i in this.structures) {
+            save.structures[i] = {};
+            for (let j in this.structures[i]) {
+                let structure = this.structures[i][j].getState();
+                save.structures[i][j] = structure;
+            }
+        }
 
-        this.saveData = JSON.stringify(save);
+        try {
+            localStorage.setItem('save', JSON.stringify(save));
+        }
+        catch (err) {
+            this.notify.error("Error saving game to local storage: " + err.message);
+            return false;
+        }
+
+        this.notify.info("Game saved");
+        return true;
     }
     
     loadGame() {
-        console.log('load');
-        const load = JSON.parse(this.saveData);
-        console.log(load);
+        const loadData = localStorage.getItem('save');
+        if (!loadData) {
+            this.notify.info("No game to load", "warn");
+            return;
+        }
+        const load = JSON.parse(loadData);
+        if (!load) {
+            this.notify.error("Error loading game data");
+            return;
+        }
 
         // Clear existing and load floaters
         for (let i in this.floaters) {
             this.floaters[i].destroy();
         }
-        this.floaters = [];
+        this.floaters = {};
         for (let i in load.floaters) {
-            let floater = Prefab.loadFromState(this, load.floaters[i]);
-            this.floaters.push(floater);
+            let floater = Prefab.loadFromState(this, load.floaters[i], i);
+            this.floaters[floater.id] = floater;
+        }
+
+        // Clear existing and load structures
+        for (let i in this.structures) {
+            for (let j in this.structures[i]) {
+                this.structures[i][j].destroy();
+            }
+        }
+        this.structures = {};
+        for (let i in load.structures) {
+            this.structures[i] = {};
+            for (let j in load.structures[i]) {
+                let structure = Prefab.loadFromState(this, load.structures[i][j], j);
+                this.structures[i][structure.id] = structure;
+            }
         }
 
         // Clear existing and load player
+        let playerId = undefined;
         if (this.player) {
+            playerId = this.player.id;
             this.player.destroy();
         }
-        this.player = Prefab.loadFromState(this, load.player);
+        this.player = Prefab.loadFromState(this, load.player, playerId);
         this.game.camera.follow(this.player);
-        this.hud.setup();
 
-        console.log('player', this.player);
+        // Reset HUD and UI
+        this.hoverWindow.close();
+        this.popupWindow.close();
+        this.gameMenu.visible = false;
+        this.subMenu.close();
+        this.hud.setup();
+        
+        this.notify.info("Game loaded");
+    }
+
+    restart() {
+        localStorage.removeItem('save');
+        this.state.start('Boot');
     }
     
     respawn(loc = undefined) {
 
         const playerRadius = 10;
+        const bases = this.structures.bases;
         if (!loc) {
             // No location specified, use random one
             loc = this.getRandomWorldLocation(playerRadius);
         }
         else {
             // If valid prefab ID specified, find coordinates
-            this.bases.hasOwnProperty(loc);
-            loc = new Phaser.Point(this.bases[loc].x - playerRadius - this.bases[loc].getWidth(), this.bases[loc].y + (this.bases[loc].getHeight() / 2));
+            bases.hasOwnProperty(loc);
+            loc = new Phaser.Point(bases[loc].x - playerRadius - bases[loc].getWidth(), bases[loc].y + (bases[loc].getHeight() / 2));
         }
 
         if (!this.player) {
@@ -151,26 +250,21 @@ class GameState extends Phaser.State {
         }
     }
 
+    spawnPlayerCorpse(player) {
+        const corpseProperties = {};
+        Phaser.Utils.extend(true, corpseProperties, this.assetData.resources.floaterCorpse.properties);
+        corpseProperties.resources = player.resources.list;
+        corpseProperties.radius = player.radius;
+        this.prefabFactory("Floater", "player", player.x + (player.radius * 2), player.y, corpseProperties);
+    }
+
     spawnResource(prefabType, name, properties) {
         let x = this.game.math.between(0, this.game.world.width);
         let y = this.game.math.between(0, this.game.world.height);
-        let prefab = this.prefabFactory(prefabType, name, x, y, properties);
-        if (prefabType === "Floater") {
-            this.floaters.push(prefab);
-        }
-        return prefab;
+        return this.prefabFactory(prefabType, name, x, y, properties);
     }
 
-    spawnStructure(prefabType, name, x, y, properties) {
-        let prefab = this.prefabFactory(prefabType, name, x, y, properties);
-        this.structures[prefab.id] = prefab;
-        if (prefabType === "Structure_Base") {
-            this.bases[prefab.id] = prefab;
-        }
-        return prefab;
-    }
-
-    prefabFactory(prefabType, name, x, y, properties = {}) {
+    prefabFactory(prefabType, name, x, y, properties = {}, id = undefined) {
         const prefabs = {
             Player,
             Floater,
@@ -180,12 +274,25 @@ class GameState extends Phaser.State {
             UI_TextListener,
             UI_ResourceTrader,
             UI_GameMenu,
-            UI_RespawnMenu
+            UI_RespawnMenu,
+            UI_ConfirmDialog
         };
         if (!prefabs.hasOwnProperty(prefabType)) {
             throw new Exception("No prefab found with type: " + prefabType);
         }
-        return new prefabs[prefabType](this, name, x, y, properties);
+        const prefab = new prefabs[prefabType](this, name, x, y, properties, id);
+
+        // Maintain game references for particular prefab types
+        switch (prefabType) {
+            case "Floater":
+                this.floaters[prefab.id] = prefab;
+                break;
+            case "Structure_Base":
+                this.structures.bases[prefab.id] = prefab;
+                break;
+        }
+
+        return prefab;
     }
 
     componentFactory(componentType, parent) {
@@ -199,21 +306,22 @@ class GameState extends Phaser.State {
         return new components[componentType](parent, ...args);
     }
 
-    removeFloater(floaterIndex) {
-        let floater = this.floaters[floaterIndex];
-        this.spawnResource(floater.constructor.name, floater.name, this.assetData.resources[floater.name].properties);
-        delete this.floaters[floaterIndex];
+    removeFloater(floaterId) {
+        let floater = this.floaters[floaterId];
+        const floaterData = this.assetData.resources[floater.name];
+        if (floaterData) {
+            // If this is a valid named resource, respawn it somewhere else on map
+            this.spawnResource(floaterData.prefabType, floater.name, floaterData.properties);
+        }
+        delete this.floaters[floaterId];
         floater.destroy();
     }
 
-    getFloaterIndex(physicsBodyId) {
-        let floaterIndex = undefined;
+    getFloater(physicsBodyId) {
         for (let i in this.floaters) {
-            if (this.floaters[i].id === physicsBodyId) {
-                floaterIndex = i;
-                break;
+            if (this.floaters[i].physicsId === physicsBodyId) {
+                return this.floaters[i];
             }
         }
-        return floaterIndex;
     }
 }

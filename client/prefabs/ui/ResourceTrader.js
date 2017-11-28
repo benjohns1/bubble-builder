@@ -1,7 +1,7 @@
 class UI_ResourceTrader extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
 
         this.realWidth = 0;
         this.source = this.properties.context;

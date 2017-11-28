@@ -1,8 +1,9 @@
 class Prefab extends Phaser.Sprite {
 
-    constructor(gameState, name, x, y, properties) {
+    constructor(gameState, name, x, y, properties, id) {
         super(gameState.game, x, y, properties.texture);
         this.gameState = gameState;
+        this.id = (id === undefined) ? this.gameState.keyGen.get() : id;
         this.name = name;
         this.properties = properties || {};
         this.debug = this.properties.debug || false;
@@ -42,6 +43,7 @@ class Prefab extends Phaser.Sprite {
     }
 
     destroy() {
+        this.gameState.keyGen.free(this.id); // free up unique key
         super.destroy();
     }
 
@@ -76,7 +78,7 @@ class Prefab extends Phaser.Sprite {
         };
         Phaser.Utils.extend(true, state.factoryArgs.properties, this.properties);
 
-        // Serialize basic fields
+        // Get/save basic fields
         for (let i in this.serializeFields) {
             let key = this.serializeFields[i];
             state.fields[key] = this[key];
@@ -85,13 +87,18 @@ class Prefab extends Phaser.Sprite {
         return state;
     }
 
-    static loadFromState(gameState, state) {
+    static loadFromState(gameState, state, id) {
         const args = state.factoryArgs;
 
-        // Instantiate prefab class
-        const instance = gameState.prefabFactory(args.prefabType, args.name, args.x, args.y, args.properties);
+        // Add ID to list of unique IDs
+        if (id !== undefined) {
+            gameState.keyGen.add(id);
+        }
 
-        // Deserialize basic fields
+        // Instantiate prefab class
+        const instance = gameState.prefabFactory(args.prefabType, args.name, args.x, args.y, args.properties, id);
+
+        // Load/set basic fields
         for (let i in state.fields) {
             instance[i] = state.fields[i];
         }

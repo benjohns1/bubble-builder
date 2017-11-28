@@ -1,7 +1,7 @@
 class Floater extends Prefab {
 
-    constructor(gameState, name, x, y, properties) {
-        super(gameState, name, x, y, properties);
+    constructor(gameState, name, x, y, properties, id) {
+        super(gameState, name, x, y, properties, id);
         
         // Interpolation value to choose between spread values
         this.spreadInterpolation = Math.random();
@@ -43,7 +43,7 @@ class Floater extends Prefab {
 
         // Create graphics and setup physics
         this.floater = Floater.createGraphics(this.game, this.radius,this.color);
-        this.id = Floater.setupPhysics(this.game, this, this.radius, this.damping, this.debug);
+        this.physicsId = Floater.setupPhysics(this.game, this, this.radius, this.damping, this.debug);
         this.addChild(this.floater);
     }
     
