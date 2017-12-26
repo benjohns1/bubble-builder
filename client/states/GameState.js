@@ -4,6 +4,7 @@ class GameState extends Phaser.State {
         super();
         this.width = 5000;
         this.height = 5000;
+        this.grid = [];
         this.floaters = {};
         this.structures = {
             "bases": {}
@@ -77,6 +78,13 @@ class GameState extends Phaser.State {
 
         // Game physics
         this.game.physics.startSystem(Phaser.Physics.P2JS);
+        
+        // Generate game grid
+        this.tileSize = 100;
+        this.grid = this.generateGrid();
+
+        // Generate barriers & walls within grid
+        this.generateBarriers();
 
         // Spawn resources
         const spawnResources = data => {
@@ -118,9 +126,62 @@ class GameState extends Phaser.State {
         }
     }
 
+    generateGrid(defaultTileState = {}) {
+        let height = this.game.world._height;
+        let width = this.game.world._width;
+        let grid = [];
+        for (let x = 0; x < Math.ceil(width / this.tileSize); x++) {
+            grid[x] = [];
+            for (let y = 0; y < Math.ceil(height / this.tileSize); y++) {
+                grid[x][y] = {};
+                Phaser.Utils.extend(true, grid[x][y], defaultTileState);
+            }
+        }
+        return grid;
+    }
+
+    getTileFromCoord(xCoord, yCoord) {
+        let height = this.game.world._height;
+        let width = this.game.world._width;
+        if (xCoord < 0 || xCoord > width || yCoord < 0 || yCoord > height) {
+            return null;
+        }
+
+        let x = Math.ceil(xCoord / this.tileSize);
+        let y = Math.ceil(yCoord / this.tileSize);
+        return {
+            "x": x,
+            "y": y,
+            "state": grid[x][y]
+        }
+    }
+
+    generateBarriers() {
+        let lastCol = this.grid.length - 1;
+        let points = this.grid.reduce((acc, col, x) => {
+            let lastRow = col.length -1;
+            return acc.concat(col.reduce((acc, tile, y) => {
+                if (x !== 0 && x !== lastCol && y !== 0 && y !== lastRow) {
+                    // Create walls on grid edge tiles
+                    return acc;
+                }
+                tile.barrier = true; // change tile grid state to "barrier"
+                acc.push({
+                    "x": x,
+                    "y": y,
+                    "tile": tile
+                });
+                return acc;
+            }, []));
+        }, []);
+        let g = new Phaser.Graphics(this.game, 0, 0);
+        g.beginFill(0x000000);
+    }
+
     saveGame() {
         const save = {
             "player": this.player.getState(),
+            "grid": this.grid,
             "floaters": {},
             "structures": {}
         };
@@ -159,6 +220,9 @@ class GameState extends Phaser.State {
             this.notify.error("Error loading game data");
             return;
         }
+
+        // Load map grid
+        Phaser.Utils.extend(true, this.grid, load.grid);
 
         // Clear existing and load floaters
         for (let i in this.floaters) {
