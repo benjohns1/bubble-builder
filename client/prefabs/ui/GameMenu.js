@@ -32,6 +32,11 @@ class UI_GameMenu extends Prefab {
         this.btnLoad = this.gameState.uiFactory.textButton.create(this.properties.loadLabel, this.load, this, 0, currentY);
         this.addChild(this.btnLoad);
         currentY += this.btnLoad.height + this.properties.elementPadding.y;
+        
+        // Delete save button
+        this.btnDeleteSave = this.gameState.uiFactory.textButton.create(this.properties.saveDeleteLabel, this.saveDelete, this, 0, currentY);
+        this.addChild(this.btnDeleteSave);
+        currentY += this.btnDeleteSave.height + this.properties.elementPadding.y;
 
         // Resume button
         this.btnResume = this.gameState.uiFactory.textButton.create(this.properties.resumeLabel, this.close, this, 0, currentY);
@@ -55,6 +60,12 @@ class UI_GameMenu extends Prefab {
         this.openSubMenu(this.properties.loadMenu);
         this.close();
     }
+
+    saveDelete() {
+        this.openSubMenu(this.properties.saveDeleteMenu);
+        this.close();
+    }
+    
 
     confirmRestart() {
         this.openSubMenu(this.properties.restartMenu);

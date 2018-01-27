@@ -69,6 +69,8 @@
                                 "elementPadding": { "x": 0, "y": 20 },
                                 "title": "Save",
                                 "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "subtitle": "Overwriting an existing save cannot be undone",
+                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "resumeLabel": "Cancel"
                             }
                         }
@@ -81,10 +83,24 @@
                                 "elementPadding": { "x": 0, "y": 20 },
                                 "title": "Load",
                                 "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
-                                "subtitle": "Loading a game will lose any unsaved progress!",
+                                "subtitle": "Loading a game will lose any unsaved progress",
                                 "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "noGamesLabel": "No local saved games found",
                                 "noGamesLabelStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
+                    "saveDeleteLabel": "Delete Saves",
+                    "saveDeleteMenu": {
+                        "menu": {
+                            "prefabType": "UI_SaveDeleteMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Delete Save Games",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "subtitle": "Deleting a save cannot be undone",
+                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "resumeLabel": "Cancel"
                             }
                         }

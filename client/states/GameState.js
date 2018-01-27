@@ -34,6 +34,9 @@ class GameState extends Phaser.State {
             },
             used: key => {
                 return !!this.keys[key];
+            },
+            clearAll: () => {
+                this.keys = {};
             }
         };
 
@@ -186,7 +189,7 @@ class GameState extends Phaser.State {
         const keys = JSON.parse(keyData);
         if (!keys) {
             this.notify.error("Error loading save game keys");
-            return;
+            return [];
         }
         return keys;
     }
@@ -194,7 +197,8 @@ class GameState extends Phaser.State {
     setSaveGameKey(key, title = undefined) {
         let keyData = this.getSaveGameKeys();
         const newSaveMeta = {
-            title: title
+            title: title,
+            time: Date.now()
         };
         if (key && keyData[key]) {
             Phaser.Utils.extend(true, keyData[key], newSaveMeta);
@@ -205,6 +209,18 @@ class GameState extends Phaser.State {
         }
         localStorage.setItem('saveGameKeys', JSON.stringify(keyData));
         return key;
+    }
+
+    deleteSave(key) {
+        if (!key) {
+            return;
+        }
+        let keyData = this.getSaveGameKeys();
+        if (keyData[key]) {
+            delete keyData[key];
+            localStorage.setItem('saveGameKeys', JSON.stringify(keyData));
+        }
+        localStorage.removeItem('save.' + key);
     }
 
     saveGame(key, title = undefined) {
@@ -239,8 +255,30 @@ class GameState extends Phaser.State {
         this.notify.info("Game saved");
         return true;
     }
+
+    getLatestSaveKey() {
+        const saveKeys = this.getSaveGameKeys();
+        let latest = undefined;
+        for (let i in saveKeys) {
+            if (!saveKeys[i]) {
+                continue;
+            }
+            if (!latest || latest.time < saveKeys[i].time) {
+                latest = {
+                    key: i,
+                    time: saveKeys[i].time
+                }
+            }
+        }
+        return latest ? latest.key : undefined;
+    }
     
     loadGame(key) {
+        if (key === undefined || key === null) {
+            // If no key specified, load the last one
+            key = this.getLatestSaveKey();
+        }
+        
         const loadData = localStorage.getItem('save.' + key);
         if (!loadData) {
             this.notify.info("No game to load", "warn");
@@ -255,22 +293,33 @@ class GameState extends Phaser.State {
         // Load map grid
         Phaser.Utils.extend(true, this.grid, load.grid);
 
-        // Clear existing and load floaters
+        // Clear existing floaters
         for (let i in this.floaters) {
             this.floaters[i].destroy();
         }
+        // Clear existing structures
+        for (let i in this.structures) {
+            for (let j in this.structures[i]) {
+                this.structures[i][j].destroy();
+            }
+        }
+        // Clear currently loaded player
+        let playerId = undefined;
+        if (this.player) {
+            playerId = this.player.id;
+            this.player.destroy();
+        }
+        // Clear any remaining keys
+        this.keyGen.clearAll();
+
+        // Load floaters
         this.floaters = {};
         for (let i in load.floaters) {
             let floater = Prefab.loadFromState(this, load.floaters[i], i);
             this.floaters[floater.id] = floater;
         }
 
-        // Clear existing and load structures
-        for (let i in this.structures) {
-            for (let j in this.structures[i]) {
-                this.structures[i][j].destroy();
-            }
-        }
+        // Load structures
         this.structures = {};
         for (let i in load.structures) {
             this.structures[i] = {};
@@ -280,12 +329,7 @@ class GameState extends Phaser.State {
             }
         }
 
-        // Clear existing and load player
-        let playerId = undefined;
-        if (this.player) {
-            playerId = this.player.id;
-            this.player.destroy();
-        }
+        // Load player
         this.player = Prefab.loadFromState(this, load.player, playerId);
         this.game.camera.follow(this.player);
 
@@ -373,6 +417,7 @@ class GameState extends Phaser.State {
             UI_RespawnMenu,
             UI_SaveMenu,
             UI_LoadMenu,
+            UI_SaveDeleteMenu,
             UI_ConfirmDialog
         };
         if (!prefabs.hasOwnProperty(prefabType)) {

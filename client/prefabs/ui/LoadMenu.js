@@ -19,10 +19,14 @@ class UI_LoadMenu extends Prefab {
             currentY += this.subtitle.height + this.properties.elementPadding.y;
 
             // Create load button for each existing save
-            const saveKeys = this.gameState.getSaveGameKeys();
+            let saveKeys = this.gameState.getSaveGameKeys();
+            saveKeys.reverse();
             if (saveKeys && saveKeys.length > 0) {
                 for (let key in saveKeys) {
                     let save = saveKeys[key];
+                    if (!save) {
+                        continue;
+                    }
                     let btnLoad = this.gameState.uiFactory.textButton.create(save.title, () => {
                         this.gameState.loadGame(key);
                         this.gameState.subMenu.close();

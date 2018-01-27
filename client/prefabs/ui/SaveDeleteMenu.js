@@ -1,4 +1,4 @@
-class UI_SaveMenu extends Prefab {
+class UI_SaveDeleteMenu extends Prefab {
     
         constructor(gameState, name, x, y, properties, id) {
             super(gameState, name, x, y, properties, id);
@@ -18,7 +18,7 @@ class UI_SaveMenu extends Prefab {
             this.addChild(this.subtitle);
             currentY += this.subtitle.height + this.properties.elementPadding.y;
 
-            // Create save button for each existing save
+            // Create delete button for each existing save
             let saveKeys = this.gameState.getSaveGameKeys();
             saveKeys.reverse();
             if (saveKeys) {
@@ -27,38 +27,16 @@ class UI_SaveMenu extends Prefab {
                     if (!save) {
                         continue;
                     }
-                    let btnSave = this.gameState.uiFactory.textButton.create(save.title, () => {
-                        this.gameState.saveGame(key);
+                    let btnDelete = this.gameState.uiFactory.textButton.create(save.title, () => {
+                        this.gameState.deleteSave(key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);
-                    this.addChild(btnSave);
-                    currentY += btnSave.height + this.properties.elementPadding.y;
+                    this.addChild(btnDelete);
+                    currentY += btnDelete.height + this.properties.elementPadding.y;
                 }
 
                 // @TODO: scrollbars
             }
-
-            // Spacer
-            currentY += 20;
-            
-            // New save button
-            const newSaveTitle = "Save Game " + saveKeys.length;
-            const btnNewSave = this.gameState.uiFactory.textButton.create("New Save", () => {
-                if (this.gameState.saveGame(undefined, newSaveTitle)) {
-                    this.gameState.subMenu.close();
-                }
-            }, this, 0, currentY);
-            currentY += btnNewSave.height + this.properties.elementPadding.y;
-            this.addChild(btnNewSave);
-            
-            // @TODO: Save to file
-            /*
-            let btnRandomRespawn = this.gameState.uiFactory.textButton.create(this.properties.randomLabel, () => {
-                this.gameState.respawn();
-                this.gameState.subMenu.close();
-            }, this, 0, currentY);
-            this.addChild(btnRandomRespawn);
-            currentY += btnRandomRespawn.height + this.properties.elementPadding.y;*/
 
             // Resume button
             this.btnResume = this.gameState.uiFactory.textButton.create(this.properties.resumeLabel, this.gameState.subMenu.close, this.gameState.subMenu, 0, currentY);
