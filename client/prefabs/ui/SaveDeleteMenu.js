@@ -22,13 +22,13 @@ class UI_SaveDeleteMenu extends Prefab {
             let saveKeys = this.gameState.getSaveGameKeys();
             saveKeys.reverse();
             if (saveKeys) {
-                for (let key in saveKeys) {
-                    let save = saveKeys[key];
+                for (let idx in saveKeys) {
+                    let save = saveKeys[idx];
                     if (!save) {
                         continue;
                     }
                     let btnDelete = this.gameState.uiFactory.textButton.create(save.title, () => {
-                        this.gameState.deleteSave(key);
+                        this.gameState.deleteSave(save.key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);
                     this.addChild(btnDelete);

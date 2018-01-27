@@ -197,6 +197,7 @@ class GameState extends Phaser.State {
     setSaveGameKey(key, title = undefined) {
         let keyData = this.getSaveGameKeys();
         const newSaveMeta = {
+            key: key,
             title: title,
             time: Date.now()
         };
@@ -204,15 +205,16 @@ class GameState extends Phaser.State {
             Phaser.Utils.extend(true, keyData[key], newSaveMeta);
         }
         else {
+            key = keyData.length;
+            newSaveMeta.key = key;
             keyData.push(newSaveMeta);
-            key = keyData.length - 1;
         }
         localStorage.setItem('saveGameKeys', JSON.stringify(keyData));
         return key;
     }
 
     deleteSave(key) {
-        if (!key) {
+        if (key === undefined || key === null) {
             return;
         }
         let keyData = this.getSaveGameKeys();
@@ -264,10 +266,7 @@ class GameState extends Phaser.State {
                 continue;
             }
             if (!latest || latest.time < saveKeys[i].time) {
-                latest = {
-                    key: i,
-                    time: saveKeys[i].time
-                }
+                latest = saveKeys[i]
             }
         }
         return latest ? latest.key : undefined;

@@ -21,14 +21,16 @@ class UI_LoadMenu extends Prefab {
             // Create load button for each existing save
             let saveKeys = this.gameState.getSaveGameKeys();
             saveKeys.reverse();
+            let saveCount = 0;
             if (saveKeys && saveKeys.length > 0) {
-                for (let key in saveKeys) {
-                    let save = saveKeys[key];
+                for (let idx in saveKeys) {
+                    let save = saveKeys[idx];
                     if (!save) {
                         continue;
                     }
+                    saveCount++;
                     let btnLoad = this.gameState.uiFactory.textButton.create(save.title, () => {
-                        this.gameState.loadGame(key);
+                        this.gameState.loadGame(save.key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);
                     this.addChild(btnLoad);
@@ -37,7 +39,8 @@ class UI_LoadMenu extends Prefab {
 
                 // @TODO: scrollbars
             }
-            else {
+            
+            if (saveCount <= 0) {
                 // No save games found
                 this.nogames = new Phaser.Text(this.gameState.game, 0, currentY, this.properties.noGamesLabel, this.properties.noGamesLabelStyle);
                 this.addChild(this.nogames);
