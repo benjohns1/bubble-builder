@@ -117,7 +117,7 @@ class GameState extends Phaser.State {
         // Dynamic submenu
         this.subMenu = this.prefabFactory("UI_Popup", "gameSubmenu", 0, 0, this.assetData.ui.menu);
 
-        // If savegame exists, load it
+        // If last savegame exists, load it
         try {
             this.loadGame();
         }
@@ -178,7 +178,36 @@ class GameState extends Phaser.State {
         g.beginFill(0x000000);
     }
 
-    saveGame() {
+    getSaveGameKeys() {
+        const keyData = localStorage.getItem('saveGameKeys');
+        if (!keyData) {
+            return [];
+        }
+        const keys = JSON.parse(keyData);
+        if (!keys) {
+            this.notify.error("Error loading save game keys");
+            return;
+        }
+        return keys;
+    }
+
+    setSaveGameKey(key, title = undefined) {
+        let keyData = this.getSaveGameKeys();
+        const newSaveMeta = {
+            title: title
+        };
+        if (key && keyData[key]) {
+            Phaser.Utils.extend(true, keyData[key], newSaveMeta);
+        }
+        else {
+            keyData.push(newSaveMeta);
+            key = keyData.length - 1;
+        }
+        localStorage.setItem('saveGameKeys', JSON.stringify(keyData));
+        return key;
+    }
+
+    saveGame(key, title = undefined) {
         const save = {
             "player": this.player.getState(),
             "grid": this.grid,
@@ -198,7 +227,9 @@ class GameState extends Phaser.State {
         }
 
         try {
-            localStorage.setItem('save', JSON.stringify(save));
+            // Save game
+            key = this.setSaveGameKey(key, title);
+            localStorage.setItem('save.' + key, JSON.stringify(save));
         }
         catch (err) {
             this.notify.error("Error saving game to local storage: " + err.message);
@@ -209,16 +240,16 @@ class GameState extends Phaser.State {
         return true;
     }
     
-    loadGame() {
-        const loadData = localStorage.getItem('save');
+    loadGame(key) {
+        const loadData = localStorage.getItem('save.' + key);
         if (!loadData) {
             this.notify.info("No game to load", "warn");
-            return;
+            return false;
         }
         const load = JSON.parse(loadData);
         if (!load) {
             this.notify.error("Error loading game data");
-            return;
+            return false;
         }
 
         // Load map grid
@@ -266,6 +297,7 @@ class GameState extends Phaser.State {
         this.hud.setup();
         
         this.notify.info("Game loaded");
+        return true;
     }
 
     restart() {
@@ -339,6 +371,8 @@ class GameState extends Phaser.State {
             UI_ResourceTrader,
             UI_GameMenu,
             UI_RespawnMenu,
+            UI_SaveMenu,
+            UI_LoadMenu,
             UI_ConfirmDialog
         };
         if (!prefabs.hasOwnProperty(prefabType)) {

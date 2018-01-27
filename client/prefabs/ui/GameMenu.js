@@ -47,12 +47,12 @@ class UI_GameMenu extends Prefab {
     }
 
     save() {
-        this.gameState.saveGame();
+        this.openSubMenu(this.properties.saveMenu);
         this.close();
     }
     
     load() {
-        this.gameState.loadGame();
+        this.openSubMenu(this.properties.loadMenu);
         this.close();
     }
 

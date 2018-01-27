@@ -62,7 +62,33 @@
                     "respawnLabel": "Respawn",
                     "resumeLabel": "Back",
                     "saveLabel": "Save",
+                    "saveMenu": {
+                        "menu": {
+                            "prefabType": "UI_SaveMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Save",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
                     "loadLabel": "Load",
+                    "loadMenu": {
+                        "menu": {
+                            "prefabType": "UI_LoadMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Load",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "subtitle": "Loading a game will lose any unsaved progress!",
+                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "noGamesLabel": "No local saved games found",
+                                "noGamesLabelStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
                     "restartLabel": "Restart Game",
                     "respawnMenu": {
                         "menu": {
