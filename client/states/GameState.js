@@ -145,11 +145,13 @@ class GameState extends Phaser.State {
         this.subMenu = this.prefabFactory("UI_Popup", "gameSubmenu", 0, 0, this.assetData.ui.menu);
 
         // If last savegame exists, load it
-        try {
-            this.loadGame();
-        }
-        catch (err) {
-            this.notify.error("Could not load previously saved game: " + err.message);
+        if (!localStorage.getItem('newGameOnLoad')) {
+            try {
+                this.loadGame();
+            }
+            catch (err) {
+                this.notify.error("Could not load previously saved game: " + err.message);
+            }
         }
     }
 
@@ -272,6 +274,7 @@ class GameState extends Phaser.State {
             // Save game
             key = this.setSaveGameKey(key, title);
             localStorage.setItem('save.' + key, JSON.stringify(save));
+            localStorage.removeItem('newGameOnLoad');
         }
         catch (err) {
             this.notify.error("Error saving game to local storage: " + err.message);
@@ -368,7 +371,7 @@ class GameState extends Phaser.State {
     }
 
     restart() {
-        localStorage.removeItem('save');
+        localStorage.setItem('newGameOnLoad', true);
         this.state.start('Boot');
     }
     
