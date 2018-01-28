@@ -4,10 +4,12 @@
         "properties": {
             "color": "#4a27b1",
             "title": "Player Base",
+            "lcTitle": "player base",
+            "desc": "Provides respawn point and generates 10% yield\n(rounded down) every minute of whatever resources\nare stored, up to maximum capacity.",
             "width": 50,
             "height": 50,
-            "updateTimer": 10000,
-            "energyAmount": 10,
+            "updateTimer": 60000,
+            "updatePercentage": 0.1,
             "buildCost": {
                 "energy": 500,
                 "green": 50,
@@ -17,7 +19,10 @@
                 "energy": 0
             },
             "resourceLimits": {
-                "energy": [0,500]
+                "energy": [0,10000],
+                "green": [0,5000],
+                "red": [0,1000],
+                "purple": [0,100]
             },
             "displayData": {
                 "title": {
@@ -26,11 +31,25 @@
                         "property": [ "displayTitle" ]
                     }
                 },
+                "desc": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "property": [ "properties", "desc" ]
+                    }
+                },
+                "timer": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "updateSignal" ],
+                        "property": [ "updateInSeconds" ],
+                        "label": "Seconds before next resource generation: "
+                    }
+                },
                 "energy": {
                     "prefabType": "UI_TextListener",
                     "properties": {
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources", "energy" ],
+                        "property": [ "resources", "displayRatio", "energy" ],
                         "label": "Energy: "
                     }
                 },
@@ -38,7 +57,7 @@
                     "prefabType": "UI_TextListener",
                     "properties": {
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources", "green" ],
+                        "property": [ "resources", "displayRatio", "green" ],
                         "label": "Green: "
                     }
                 },
@@ -46,7 +65,7 @@
                     "prefabType": "UI_TextListener",
                     "properties": {
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources", "red" ],
+                        "property": [ "resources", "displayRatio", "red" ],
                         "label": "Red: "
                     }
                 },
@@ -54,7 +73,7 @@
                     "prefabType": "UI_TextListener",
                     "properties": {
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources", "purple" ],
+                        "property": [ "resources", "displayRatio", "purple" ],
                         "label": "Purple: "
                     }
                 },

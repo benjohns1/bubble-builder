@@ -163,7 +163,7 @@ class Player extends Prefab {
 
         // Remove resources from player
         if (!this.gameState.freeBuild && !this.resources.removeResources(structureData.properties.buildCost)) {
-            this.gameState.notify.warn("Not enough resources to build " + (structureData.properties.title ? structureData.properties.title : name) + " structure");
+            this.gameState.notify.warn("Not enough resources to build " + (structureData.properties.lcTitle ? structureData.properties.lcTitle : name));
             return false;
         }
 

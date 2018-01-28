@@ -18,7 +18,7 @@ class UI_ResourceTrader extends Prefab {
 
         // Take input box
         this.takeAmount = this.game.add.inputField(this.realWidth, 0, {
-            width: 32,
+            width: 50,
             padding: 10,
             type: PhaserInput.InputType.number
         });
@@ -37,7 +37,7 @@ class UI_ResourceTrader extends Prefab {
 
         // Give input box
         this.giveAmount = this.game.add.inputField(this.realWidth, 0, {
-            width: 32,
+            width: 50,
             padding: 10,
             type: PhaserInput.InputType.number
         });
@@ -54,6 +54,11 @@ class UI_ResourceTrader extends Prefab {
         this.playerListener = new Component_PropertyListener(this, this.properties.property, this.resourcesUpdated, this, this.properties.signal, this.player);
 
         this.resourcesUpdated();
+    }
+
+    update() {
+        this.takeAmount.update();
+        this.giveAmount.update();
     }
 
     resourcesUpdated() {

@@ -85,6 +85,18 @@
                                 "property": [ "buildStructureData", "properties", "title" ]
                             }
                         },
+                        "desc": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "desc" ]
+                            }
+                        },
+                        "build": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "label": "\nBuild Requirements:"
+                            }
+                        },
                         "energy": {
                             "prefabType": "UI_TextListener",
                             "properties": {

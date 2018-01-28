@@ -58,6 +58,15 @@ class Component_ResourceContainer extends Component {
             }
         });
 
+        Object.defineProperty(this, "displayRatio", {
+            get: function() {
+                return Object.keys(resources).reduce((acc, resourceName) => {
+                    acc[resourceName] = this.limits[resourceName] ? (this[resourceName] + " / " + this.limits[resourceName][1]) : this[resourceName] + "";
+                    return acc;
+                }, {});
+            }
+        })
+
         this.valid = function(resourceName) {
             return resources.hasOwnProperty(resourceName);
         }

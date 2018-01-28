@@ -45,6 +45,7 @@ class UI_TextListener extends Prefab {
         }
         
         // Set text
+        value = value === undefined ? "" : value;
         this.text.text = this.properties.label !== undefined ? this.properties.label + value : value;
         this.onChange.dispatch(this.text.text);
     }

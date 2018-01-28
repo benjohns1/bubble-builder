@@ -3,7 +3,7 @@ class Component_PropertyListener extends Component {
     constructor(parent, property, callback, callbackContext, signal, context) {
         super(parent);
         this.propValue = null;
-        this.property = property;
+        this.property = property === undefined ? [null] : property;
         this.context = context || parent;
         this.callback = callback;
         this.callbackContext = callbackContext;

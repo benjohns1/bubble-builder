@@ -133,4 +133,16 @@ class UI_Popup extends Prefab {
 
         return g;
     }
+
+    update() {
+        if (!this.opened) {
+            return;
+        }
+
+        this.dataPrefabs.forEach(prefab => {
+            if (typeof prefab.update === 'function') {
+                prefab.update();
+            }
+        })
+    }
 }
