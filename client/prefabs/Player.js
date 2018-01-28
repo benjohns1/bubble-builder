@@ -4,8 +4,7 @@ class Player extends Prefab {
         super(gameState, name, x, y, properties, id);
 
         this.debug = this.properties.debug || false;
-        this.color = Phaser.Color.hexToRGB(properties.color || "#3916a0");;
-        this.freeBuild = this.properties.hasOwnProperty("freeBuild") ? this.properties.freeBuild : false;
+        this.color = Phaser.Color.hexToRGB(properties.color || "#3916a0");
         this.allowMovement = true;
         let _displaySize = 0;
         this.onChange = new Phaser.Signal();
@@ -88,7 +87,7 @@ class Player extends Prefab {
     }
 
     respawn(x, y) {
-        this.kill();
+        this.kill("You committed suicide");
         this.init(true);
         this.updateEnergy(false, true);
 
@@ -158,12 +157,13 @@ class Player extends Prefab {
         // Get structure data
         const structureData = this.gameState.assetData.structures[name];
         if (!structureData) {
+            this.gameState.notify.error("Invalid structure to build");
             throw new Exception("Invalid structure " + name);
         }
 
         // Remove resources from player
-        if (!this.freeBuild && !this.resources.removeResources(structureData.properties.buildCost)) {
-            console.warn("Cannot build, not enough resources");
+        if (!this.gameState.freeBuild && !this.resources.removeResources(structureData.properties.buildCost)) {
+            this.gameState.notify.warn("Not enough resources to build " + (structureData.properties.title ? structureData.properties.title : name) + " structure");
             return false;
         }
 

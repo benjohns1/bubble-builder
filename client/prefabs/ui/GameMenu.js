@@ -11,32 +11,27 @@ class UI_GameMenu extends Prefab {
         // Title
         this.title = new Phaser.Text(this.gameState.game, 0, currentY, this.properties.title, this.properties.titleStyle);
         this.addChild(this.title);
-        currentY += this.title.height + this.properties.elementPadding.y;
+        currentY += this.title.height + this.elementPadding.y;
 
         // Restart button
         this.btnRestart = this.gameState.uiFactory.textButton.create(this.properties.restartLabel, this.confirmRestart, this, 0, currentY);
         this.addChild(this.btnRestart);
-        currentY += this.btnRestart.height + this.properties.elementPadding.y;
+        currentY += this.btnRestart.height + this.elementPadding.y;
 
         // Respawn button
         this.btnRespawn = this.gameState.uiFactory.textButton.create(this.properties.respawnLabel, this.respawn, this, 0, currentY);
         this.addChild(this.btnRespawn);
-        currentY += this.btnRespawn.height + this.properties.elementPadding.y;
+        currentY += this.btnRespawn.height + this.elementPadding.y;
         
         // Save button
         this.btnSave = this.gameState.uiFactory.textButton.create(this.properties.saveLabel, this.save, this, 0, currentY);
         this.addChild(this.btnSave);
-        currentY += this.btnSave.height + this.properties.elementPadding.y;
+        currentY += this.btnSave.height + this.elementPadding.y;
         
         // Load button
         this.btnLoad = this.gameState.uiFactory.textButton.create(this.properties.loadLabel, this.load, this, 0, currentY);
         this.addChild(this.btnLoad);
-        currentY += this.btnLoad.height + this.properties.elementPadding.y;
-        
-        // Delete save button
-        this.btnDeleteSave = this.gameState.uiFactory.textButton.create(this.properties.saveDeleteLabel, this.saveDelete, this, 0, currentY);
-        this.addChild(this.btnDeleteSave);
-        currentY += this.btnDeleteSave.height + this.properties.elementPadding.y;
+        currentY += this.btnLoad.height + this.elementPadding.y;
 
         // Resume button
         this.btnResume = this.gameState.uiFactory.textButton.create(this.properties.resumeLabel, this.close, this, 0, currentY);
@@ -58,11 +53,6 @@ class UI_GameMenu extends Prefab {
     
     load() {
         this.openSubMenu(this.properties.loadMenu);
-        this.close();
-    }
-
-    saveDelete() {
-        this.openSubMenu(this.properties.saveDeleteMenu);
         this.close();
     }
     

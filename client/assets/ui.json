@@ -43,6 +43,13 @@
             "bottom": 10
         }
     },
+    "notifier": {
+        "colorBarWidth": 10,
+        "bgAlpha": 0.7,
+        "screenWidthPercent": 0.5,
+        "showSeconds": 5,
+        "textStyle": { "font": "bold 16px Arial", "fill": "#000000" }
+    },
     "menu": {
         "cornerRadius": 10,
         "margins": {
@@ -71,7 +78,21 @@
                                 "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
                                 "subtitle": "Overwriting an existing save cannot be undone",
                                 "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
-                                "resumeLabel": "Cancel"
+                                "resumeLabel": "Cancel",
+                                "saveDeleteLabel": "Delete Saves",
+                                "saveDeleteMenu": {
+                                    "menu": {
+                                        "prefabType": "UI_SaveDeleteMenu",
+                                        "properties": {
+                                            "elementPadding": { "x": 0, "y": 20 },
+                                            "title": "Delete Save Games",
+                                            "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                            "subtitle": "Deleting a save cannot be undone",
+                                            "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                            "resumeLabel": "Cancel"
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
@@ -87,20 +108,6 @@
                                 "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "noGamesLabel": "No local saved games found",
                                 "noGamesLabelStyle": { "font": "bold 14px Arial", "fill": "#000000" },
-                                "resumeLabel": "Cancel"
-                            }
-                        }
-                    },
-                    "saveDeleteLabel": "Delete Saves",
-                    "saveDeleteMenu": {
-                        "menu": {
-                            "prefabType": "UI_SaveDeleteMenu",
-                            "properties": {
-                                "elementPadding": { "x": 0, "y": 20 },
-                                "title": "Delete Save Games",
-                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
-                                "subtitle": "Deleting a save cannot be undone",
-                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "resumeLabel": "Cancel"
                             }
                         }

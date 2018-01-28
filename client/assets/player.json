@@ -7,8 +7,7 @@
                 "energy": 10
             },
             "speed": 250,
-            "damping": 0.5,
-            "freeBuild": true
+            "damping": 0.5
         }
     }
 }

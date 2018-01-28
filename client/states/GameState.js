@@ -2,6 +2,7 @@ class GameState extends Phaser.State {
     
     constructor() {
         super();
+        this.freeBuild = false;
         this.width = 5000;
         this.height = 5000;
         this.grid = [];
@@ -41,19 +42,39 @@ class GameState extends Phaser.State {
         };
 
         // Notifications
+        const self = this;
         this.notify = {
-            // @TODO: usein-game notification dialog
             error: function(text) {
-                console.error("Error: " + text);
+                if (self.notifier) {
+                    self.notifier.notify(text, 0xff0000, 0xffaaaa);
+                }
+                else {
+                    console.error("Error: " + text);
+                }
             },
             warn: function(text) {
-                console.warn("Warn: " + text);
+                if (self.notifier) {
+                    self.notifier.notify(text, 0xff5733, 0xffddaa);
+                }
+                else {
+                    console.warn("Warn: " + text);
+                }
             },
             info: function(text) {
-                console.log("Info: " + text);
+                if (self.notifier) {
+                    self.notifier.notify(text, 0x0bad52, 0x8ef4bb);
+                }
+                else {
+                    console.log("Info: " + text);
+                }
             },
             death: function(text) {
-                console.log(text);
+                if (self.notifier) {
+                    self.notifier.notify(text, 0x000000);
+                }
+                else {
+                    console.log(text);
+                }
             }
         }
     }
@@ -104,6 +125,9 @@ class GameState extends Phaser.State {
 
         // Initialize the HUD plugin
         this.hud = this.game.plugins.add(HUD, this, this.assetData.hud);
+        
+        // UI Notifications
+        this.notifier = this.prefabFactory("UI_Notifier", "notifier", 0, 0, this.assetData.ui.notifier);
 
         // Initialize hover-over window handler
         this.hoverWindow = this.prefabFactory("UI_Popup", "hoverWindow", 0, 0, this.assetData.ui.hover);
@@ -280,7 +304,7 @@ class GameState extends Phaser.State {
         
         const loadData = localStorage.getItem('save.' + key);
         if (!loadData) {
-            this.notify.info("No game to load", "warn");
+            this.notify.info("No game to load");
             return false;
         }
         const load = JSON.parse(loadData);
@@ -409,6 +433,7 @@ class GameState extends Phaser.State {
             Floater,
             BuildIcon,
             Structure_Base,
+            UI_Notifier,
             UI_Popup,
             UI_TextListener,
             UI_ResourceTrader,
