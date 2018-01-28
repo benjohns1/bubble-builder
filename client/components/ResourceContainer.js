@@ -103,10 +103,23 @@ class Component_ResourceContainer extends Component {
         if (!target[resourceName]) {
             return false;
         }
-        const amountToTake = Math.min(target[resourceName], amount) || 0;
+        const availableSpace = this.availableSpace(resourceName);
+        const amountToTake = Math.min(target[resourceName], availableSpace > amount ? amount : availableSpace) || 0;
         this.add(resourceName, amountToTake);
         target.remove(resourceName, amountToTake);
         return true;
+    }
+
+    availableSpace(resourceName) {
+        if (!this.limits[resourceName]) {
+            return Infinity;
+        }
+
+        if (this.restrict && !this.hasOwnProperty(resourceName)) {
+            return 0;
+        }
+
+        return this.limits[resourceName][1] - this[resourceName];
     }
 
     takeAllFrom(target) {

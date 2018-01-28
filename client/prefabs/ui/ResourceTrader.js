@@ -62,7 +62,16 @@ class UI_ResourceTrader extends Prefab {
         }
         const takeAmountValue = this.source.resources[this.currentResource];
         this.takeAmount.setText(takeAmountValue);
-        const giveAmountValue = this.currentResource === "energy" ? Math.max(this.player.resources.energy - 100, 0) : this.player.resources[this.currentResource];
+
+        // Keep 100 player energy
+        let giveAmountValue = this.currentResource === "energy" ? Math.max(this.player.resources.energy - 100, 0) : this.player.resources[this.currentResource];
+
+        // Clamp max amount
+        const availableSpace = this.source.resources.availableSpace(this.currentResource);
+        if (availableSpace < giveAmountValue) {
+            giveAmountValue = availableSpace;
+        }
+
         this.giveAmount.setText(giveAmountValue);
     }
 
