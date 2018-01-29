@@ -1,4 +1,6 @@
-class GameState extends Phaser.State {
+import Phaser from 'phaser'
+
+export default class GameState extends Phaser.State {
     
     constructor() {
         super();

@@ -1,4 +1,4 @@
-class Component_PropertyListener extends Component {
+export default class Component_PropertyListener extends Component {
 
     constructor(parent, property, callback, callbackContext, signal, context) {
         super(parent);

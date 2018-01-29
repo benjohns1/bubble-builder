@@ -1,0 +1,64 @@
+{
+    "floaterGreen": {
+        "prefabType": "Floater",
+        "count": 200,
+        "properties": {
+            "radiusSpread": [3, 15],
+            "color": "#0fc487",
+            "debug": false,
+            "resourceSpread": {
+                "energy": [1,10],
+                "green": [0, 3]
+            }
+        }
+    },
+    "floaterRed": {
+        "prefabType": "Floater",
+        "count": 50,
+        "properties": {
+            "radiusSpread": [15, 30],
+            "color": "#a82f39",
+            "resourceSpread": {
+                "energy": [20,30],
+                "red": [0, 3]
+            }
+        }
+    },
+    "floaterPurple": {
+        "prefabType": "Floater",
+        "count": 20,
+        "properties": {
+            "radiusSpread": [40, 60],
+            "color": "#7b2fa8",
+            "resourceSpread": {
+                "energy": [40,100],
+                "purple": [0, 2]
+            }
+        }
+    },
+    "floaterWhite": {
+        "prefabType": "Floater",
+        "count": 5,
+        "properties": {
+            "radiusSpread": [50, 70],
+            "color": "#ffffff",
+            "resourceSpread": {
+                "energy": [500,2000],
+                "green": [50,200],
+                "red": [30,100],
+                "purple": [5,30]
+            }
+        }
+    },
+    "floaterCorpse": {
+        "prefabType": "Floater",
+        "count": 0,
+        "properties": {
+            "radius": 10,
+            "color": "#000000",
+            "resources": {
+                "energy": 100
+            }
+        }
+    }
+}

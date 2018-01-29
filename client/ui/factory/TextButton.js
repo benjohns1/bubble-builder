@@ -1,4 +1,4 @@
-class UI_Factory_TextButton {
+export default class UI_Factory_TextButton {
 
     constructor(game, textStyle = { "font": "16px Arial", "fill": "#000000" }, cornerRadius = 2, padding = { "top": 0, "right": 0, "bottom": 0, "left": 0 }, textOffset = { "x": 0, "y": 0 }) {
         this.game = game;

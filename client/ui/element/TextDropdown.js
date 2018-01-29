@@ -1,4 +1,4 @@
-class UI_Element_TextDropdown extends Phaser.Sprite {
+export default class UI_Element_TextDropdown extends Phaser.Sprite {
     
         constructor(game, x, y, options, selectedOption, onSelectCallback, onSelectContext, width = undefined, height = undefined, cornerRadius = 2, textStyle = {}, padding = { "top": 0, "left": 0, "right": 0, "bottom": 0 }, textOffset = { "x": 0, "y": 0 }) {
             super(game, x, y);

@@ -1,4 +1,4 @@
-class Structure extends Prefab {
+export default class Structure extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

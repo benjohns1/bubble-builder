@@ -1,4 +1,4 @@
-class UI_Popup extends Prefab {
+export default class UI_Popup extends Prefab {
 
     constructor(gameState, name, x, y, properties = {}, id = undefined) {
         super(gameState, name, x, y, properties, id);

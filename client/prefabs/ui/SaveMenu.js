@@ -1,4 +1,4 @@
-class UI_SaveMenu extends Prefab {
+export default class UI_SaveMenu extends Prefab {
     
         constructor(gameState, name, x, y, properties, id) {
             super(gameState, name, x, y, properties, id);

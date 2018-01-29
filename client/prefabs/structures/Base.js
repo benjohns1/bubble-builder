@@ -1,5 +1,4 @@
-
-class Structure_Base extends Structure {
+export default class Structure_Base extends Structure {
     
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

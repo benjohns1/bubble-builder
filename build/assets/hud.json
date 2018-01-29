@@ -1,0 +1,126 @@
+{
+    "margins": {
+        "left": 30,
+        "right": 30,
+        "top": 30,
+        "bottom": 30
+    },
+    "background": {
+        "color": "#ffffff",
+        "alpha": 0.5,
+        "cornerRadius": 1,
+        "padding": {
+            "left": 10,
+            "right": 10,
+            "top": 10,
+            "bottom": 10
+        }
+    },
+    "elements": {
+        "bottomLeft": {
+            "size": {
+                "prefabType": "UI_TextListener",
+                "properties": {
+                    "group": "hud",
+                    "context": [ "player" ],
+                    "signal": [ "onChange" ],
+                    "property": [ "displaySize" ],
+                    "valueFormat": {
+                        "methodName": "toFixed",
+                        "args": [1]
+                    },
+                    "label": "Size: "
+                }
+            },
+            "energy": {
+                "prefabType": "UI_TextListener",
+                "properties": {
+                    "group": "hud",
+                    "context": [ "player" ],
+                    "signal": [ "resources", "onChange" ],
+                    "property": [ "displayEnergyThreshold" ],
+                    "label": "Energy: "
+                }
+            },
+            "green": {
+                "prefabType": "UI_TextListener",
+                "properties": {
+                    "group": "hud",
+                    "context": [ "player", "resources" ],
+                    "signal": [ "onChange" ],
+                    "property": [ "green" ],
+                    "label": "Green: "
+                }
+            },
+            "red": {
+                "prefabType": "UI_TextListener",
+                "properties": {
+                    "group": "hud",
+                    "context": [ "player", "resources" ],
+                    "signal": [ "onChange" ],
+                    "property": [ "red" ],
+                    "label": "Red: "
+                }
+            },
+            "purple": {
+                "prefabType": "UI_TextListener",
+                "properties": {
+                    "group": "hud",
+                    "context": [ "player", "resources" ],
+                    "signal": [ "onChange" ],
+                    "property": [ "purple" ],
+                    "label": "Purple: "
+                }
+            }
+        },
+        "bottomRight": {
+            "buildBase": {
+                "prefabType": "BuildIcon",
+                "properties": {
+                    "structureName": "base",
+                    "displayData": {
+                        "title": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "title" ]
+                            }
+                        },
+                        "desc": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "desc" ]
+                            }
+                        },
+                        "build": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "label": "\nBuild Requirements:"
+                            }
+                        },
+                        "energy": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "energy" ],
+                                "label": "Energy: "
+                            }
+                        },
+                        "green": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "green" ],
+                                "label": "Green: "
+                            }
+                        },
+                        "red": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "red" ],
+                                "label": "Red: "
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

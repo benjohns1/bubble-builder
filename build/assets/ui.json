@@ -1,0 +1,144 @@
+{
+    "assets": {
+        "nineSlice": {
+            "btnDefault": [
+                "/assets/images/btn_clean.png",
+                25
+            ]
+        }
+    },
+    "popup": {
+        "closeTextStyle": {
+            "font": "15px Arial",
+            "fill": "#ffffff"
+        },
+        "closeTextPadding": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+        },
+        "closeTextOffset": {
+            "x": 4,
+            "y": -3
+        },
+        "cornerRadius": 2,
+        "closeButtonSize": {
+            "x": 15,
+            "y": 15
+        },
+        "margins": {
+            "left": 10,
+            "right": 10,
+            "top": 10,
+            "bottom": 10
+        }
+    },
+    "hover": {
+        "cornerRadius": 2,
+        "margins": {
+            "left": 10,
+            "right": 10,
+            "top": 10,
+            "bottom": 10
+        }
+    },
+    "notifier": {
+        "colorBarWidth": 10,
+        "bgAlpha": 0.7,
+        "screenWidthPercent": 0.5,
+        "showSeconds": 5,
+        "textStyle": { "font": "bold 16px Arial", "fill": "#000000" }
+    },
+    "menu": {
+        "cornerRadius": 10,
+        "margins": {
+            "left": 20,
+            "right": 20,
+            "top": 20,
+            "bottom": 20
+        },
+        "fixedToCamera": true,
+        "displayData": {
+            "menu": {
+                "prefabType": "UI_GameMenu",
+                "properties": {
+                    "elementPadding": { "x": 0, "y": 20 },
+                    "title": "Game Menu",
+                    "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                    "respawnLabel": "Respawn",
+                    "resumeLabel": "Back",
+                    "saveLabel": "Save",
+                    "saveMenu": {
+                        "menu": {
+                            "prefabType": "UI_SaveMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Save",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "subtitle": "Overwriting an existing save cannot be undone",
+                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "resumeLabel": "Cancel",
+                                "saveDeleteLabel": "Delete Saves",
+                                "saveDeleteMenu": {
+                                    "menu": {
+                                        "prefabType": "UI_SaveDeleteMenu",
+                                        "properties": {
+                                            "elementPadding": { "x": 0, "y": 20 },
+                                            "title": "Delete Save Games",
+                                            "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                            "subtitle": "Deleting a save cannot be undone",
+                                            "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                            "resumeLabel": "Cancel"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "loadLabel": "Load",
+                    "loadMenu": {
+                        "menu": {
+                            "prefabType": "UI_LoadMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Load",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "subtitle": "Loading a game will lose any unsaved progress",
+                                "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "noGamesLabel": "No local saved games found",
+                                "noGamesLabelStyle": { "font": "bold 14px Arial", "fill": "#000000" },
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
+                    "restartLabel": "Restart Game",
+                    "respawnMenu": {
+                        "menu": {
+                            "prefabType": "UI_RespawnMenu",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Choose Respawn Location",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "randomLabel": "Random Location",
+                                "resumeLabel": "Cancel"
+                            }
+                        }
+                    },
+                    "restartMenu": {
+                        "menu": {
+                            "prefabType": "UI_ConfirmDialog",
+                            "properties": {
+                                "elementPadding": { "x": 0, "y": 20 },
+                                "title": "Really start over? All saved progress will be lost",
+                                "titleStyle": { "font": "bold 20px Arial", "fill": "#000000" },
+                                "confirmLabel": "Restart",
+                                "cancelLabel": "Cancel"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

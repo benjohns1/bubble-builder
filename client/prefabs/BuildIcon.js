@@ -1,4 +1,4 @@
-class BuildIcon extends Prefab {
+export default class BuildIcon extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

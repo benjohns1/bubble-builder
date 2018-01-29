@@ -1,4 +1,7 @@
-class SplashState extends Phaser.State {
+import Phaser from 'phaser';
+import PhaserInput from 'phaserInput';
+
+export default class SplashState extends Phaser.State {
 
     init(rawJsonAssetText, startState) {
         this.rawJsonAssetText = rawJsonAssetText;

@@ -1,4 +1,4 @@
-class UI_StructureManager extends Prefab {
+export default class UI_StructureManager extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

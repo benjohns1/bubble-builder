@@ -1,4 +1,4 @@
-class HUD extends Phaser.Plugin {
+export default class HUD extends Phaser.Plugin {
 
     init(gameState, data) {
         this.gameState = gameState;
