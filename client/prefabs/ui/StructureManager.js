@@ -23,13 +23,13 @@ class UI_StructureManager extends Prefab {
 
     deconstruct() {
         this.player.resources.takeAllFrom(this.source.resources);
-        if (this.source.properties.buildCost) {
-            Object.keys(this.source.properties.buildCost).forEach(resourceName => {
-                this.player.resources.add(resourceName, this.source.properties.buildCost[resourceName]);
-                this.source.properties.buildCost[resourceName] = 0; // just in case structure is not destroyed successfully
+        const buildCost = this.source.properties.buildCost
+        this.gameState.removePrefab(this.source.constructor.name, this.source.id);
+        if (buildCost) {
+            Object.keys(buildCost).forEach(resourceName => {
+                this.player.resources.add(resourceName, buildCost[resourceName]);
             });
         }
-        this.gameState.removePrefab(this.source.constructor.name, this.source.id);
         this.parent.parent.close();
     }
 }
