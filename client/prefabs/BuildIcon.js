@@ -64,6 +64,8 @@ class BuildIcon extends Prefab {
     dragStart() {
         // Show static icon, while main icon is being dragged
         this.staticIcon.visible = true;
+
+        this.gameState.hoverWindow.close();
         
         this.cameraDragStart = {
             x: this.game.camera.x,

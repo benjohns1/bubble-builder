@@ -4,8 +4,9 @@
   "description": "Single player phaser game",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "dev-build": "webpack"
+    "dev": "nodemon index-dev.js",
+    "dev-build": "webpack && nodemon index-dev-build.js",
+    "dev-build-webpack": "webpack"
   },
   "repository": {
     "type": "git",
