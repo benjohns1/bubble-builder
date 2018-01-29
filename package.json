@@ -1,7 +1,7 @@
 {
   "name": "phaser-sp-test",
   "version": "1.0.0",
-  "description": "Single player phaser game test",
+  "description": "Single player phaser game",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benjohns1/phaser-sp-test.git"
+    "url": "git+https://github.com/benjohns1/bubble-builder.git"
   },
   "author": "Ben Johns",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/benjohns1/phaser-sp-test/issues"
+    "url": "https://github.com/benjohns1/bubble-builder/issues"
   },
-  "homepage": "https://github.com/benjohns1/phaser-sp-test#readme",
+  "homepage": "https://github.com/benjohns1/bubble-builder",
   "dependencies": {
     "express": "^4.16.2",
     "phaser": "^2.6.2"
