@@ -1,4 +1,4 @@
-export default class Prefab extends Phaser.Sprite {
+class Prefab extends Phaser.Sprite {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState.game, x, y, properties.texture);

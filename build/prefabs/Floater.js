@@ -1,4 +1,4 @@
-export default class Floater extends Prefab {
+class Floater extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

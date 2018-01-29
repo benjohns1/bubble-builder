@@ -1,4 +1,4 @@
-export default class Component_ResourceContainer extends Component {
+class Component_ResourceContainer extends Component {
     
     constructor(parent, initialResources, limits, restrict = false) {
         super(parent);

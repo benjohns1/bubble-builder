@@ -1,4 +1,4 @@
-export default class Exception {
+class Exception {
     constructor(message) {
         this.message = message;
     }

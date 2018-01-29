@@ -1,4 +1,4 @@
-export default class UI_TextListener extends Prefab {
+class UI_TextListener extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

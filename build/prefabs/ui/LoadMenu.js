@@ -1,4 +1,4 @@
-export default class UI_LoadMenu extends Prefab {
+class UI_LoadMenu extends Prefab {
     
         constructor(gameState, name, x, y, properties, id) {
             super(gameState, name, x, y, properties, id);

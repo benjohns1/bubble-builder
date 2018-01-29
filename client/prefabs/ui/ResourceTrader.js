@@ -1,6 +1,4 @@
-import PhaserInput from 'phaserInput';
-
-export default class UI_ResourceTrader extends Prefab {
+class UI_ResourceTrader extends Prefab {
 
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

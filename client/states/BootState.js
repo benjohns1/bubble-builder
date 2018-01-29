@@ -1,6 +1,4 @@
-import Phaser from 'phaser'
-
-export default class BootState extends Phaser.State {
+class BootState extends Phaser.State {
 
     init(assetFiles, startState) {
 

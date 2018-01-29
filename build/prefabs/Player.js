@@ -1,4 +1,4 @@
-export default class Player extends Prefab {
+class Player extends Prefab {
     
     constructor(gameState, name, x, y, properties, id) {
         super(gameState, name, x, y, properties, id);

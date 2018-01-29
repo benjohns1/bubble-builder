@@ -1,6 +1,4 @@
-import Phaser from 'phaser'
-
-export default class MenuState extends Phaser.State {
+class MenuState extends Phaser.State {
 
     create() {
         const banner = this.add.text(this.world.centerX, this.world.centerY - 50, "Game Menu", {

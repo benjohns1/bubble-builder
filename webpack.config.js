@@ -24,9 +24,9 @@ module.exports = {
     plugins: [
       new CopyWebpackPlugin([
         { from: 'client' },
-        { from: 'node_modules/phaser/dist', to: 'lib/phaser' },
-        { from: 'node_modules/@orange-games/phaser-input/build', to: 'lib/phaser-input' },
-        { from: 'node_modules/@orange-games/phaser-nineslice/build', to: 'lib/phaser-nineslice' }
+        { from: 'node_modules/phaser/build/phaser.js', to: 'lib/phaser.js' },
+        { from: 'node_modules/@orange-games/phaser-input/build/phaser-input.js', to: 'lib/phaser-input.js' },
+        { from: 'node_modules/@orange-games/phaser-nineslice/build/phaser-nineslice.js', to: 'lib/phaser-nineslice.js' }
       ])
     ]
   }
