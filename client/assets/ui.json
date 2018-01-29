@@ -2,7 +2,7 @@
     "assets": {
         "nineSlice": {
             "btnDefault": [
-                "/assets/images/btn_clean.png",
+                "assets/images/btn_clean.png",
                 25
             ]
         }
