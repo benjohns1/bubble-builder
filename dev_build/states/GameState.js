@@ -147,7 +147,9 @@ class GameState extends Phaser.State {
         // If last savegame exists, load it
         if (!localStorage.getItem('newGameOnLoad')) {
             try {
-                this.loadGame();
+                if (!this.loadGame()) {
+                    this.notify.info("Starting new game");
+                }
             }
             catch (err) {
                 this.notify.error("Could not load previously saved game: " + err.message);
@@ -307,7 +309,6 @@ class GameState extends Phaser.State {
         
         const loadData = localStorage.getItem('save.' + key);
         if (!loadData) {
-            this.notify.info("No game to load");
             return false;
         }
         const load = JSON.parse(loadData);
