@@ -3,22 +3,15 @@ var path = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// Phaser webpack config
-var phaserModule = path.join(__dirname, '/node_modules/phaser/');
-var phaser = path.join(phaserModule, 'build/custom/phaser-split.js');
-var pixi = path.join(phaserModule, 'build/custom/pixi.js');
-var p2 = path.join(phaserModule, 'build/custom/p2.js');
-var phaserInput = path.join(__dirname, '/node_modules/@orange-games/phaser-input/build/phaser-input.js');
-
 var definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
 });
 
 module.exports = {
-    entry: './client/index.js',
+    entry: './null.js',
     output: {
       path: path.join(__dirname, "build"),
-      filename: 'bundle.js'
+      filename: 'null.js'
     },
     devServer: {
       inline: true,
@@ -26,24 +19,14 @@ module.exports = {
       port: 3000
     },
     module: {
-      loaders: [      
-        { test: /\.js$/, loader: 'babel-loader', include: __dirname, exclude: /node_modules/ },
-        { test: /pixi\.js/, loader: 'expose-loader?PIXI' },
-        { test: /phaser-split\.js$/, loader: 'expose-loader?Phaser' },
-        { test: /p2\.js/, loader: 'expose-loader?p2' }
-      ]
+      loaders: []
     },
     plugins: [
       new CopyWebpackPlugin([
-        { from: 'client/assets', to: 'assets' } 
+        { from: 'client' },
+        { from: 'node_modules/phaser/dist', to: 'lib/phaser' },
+        { from: 'node_modules/@orange-games/phaser-input/build', to: 'lib/phaser-input' },
+        { from: 'node_modules/@orange-games/phaser-nineslice/build', to: 'lib/phaser-nineslice' }
       ])
-    ],
-    resolve: {
-      alias: {
-        'phaser': phaser,
-        'pixi': pixi,
-        'p2': p2,
-        'phaserInput': phaserInput
-      }
-    }
+    ]
   }
