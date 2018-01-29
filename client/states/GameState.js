@@ -440,6 +440,7 @@ class GameState extends Phaser.State {
             UI_Popup,
             UI_TextListener,
             UI_ResourceTrader,
+            UI_StructureManager,
             UI_GameMenu,
             UI_RespawnMenu,
             UI_SaveMenu,
@@ -474,6 +475,20 @@ class GameState extends Phaser.State {
         }
         const args = Array.prototype.slice.call(arguments).slice(2);
         return new components[componentType](parent, ...args);
+    }
+
+    removePrefab(prefabType, id) {
+        // Maintain game references for particular prefab types
+        switch (prefabType) {
+            case "Floater":
+                this.removeFloater(id);
+                break;
+            case "Structure_Base":
+                let structure = this.structures.bases[id];
+                delete this.structures.bases[id];
+                structure.destroy();
+                break;
+        }
     }
 
     removeFloater(floaterId) {

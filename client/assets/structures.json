@@ -37,12 +37,18 @@
                         "property": [ "properties", "desc" ]
                     }
                 },
+                "structureManager": {
+                    "prefabType": "UI_StructureManager",
+                    "properties": {
+                        "property": []
+                    }
+                },
                 "timer": {
                     "prefabType": "UI_TextListener",
                     "properties": {
                         "signal": [ "updateSignal" ],
                         "property": [ "updateInSeconds" ],
-                        "label": "Seconds before next resource generation: "
+                        "label": "\nNext resource generation in "
                     }
                 },
                 "energy": {
