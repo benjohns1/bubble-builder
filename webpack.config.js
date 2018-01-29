@@ -3,20 +3,11 @@ var path = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var definePlugin = new webpack.DefinePlugin({
-  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
-});
-
 module.exports = {
     entry: './null.js',
     output: {
-      path: path.join(__dirname, "build"),
+      path: path.join(__dirname, "dev_build"),
       filename: 'null.js'
-    },
-    devServer: {
-      inline: true,
-      contentBase: './build',
-      port: 3000
     },
     module: {
       loaders: []

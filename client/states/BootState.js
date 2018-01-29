@@ -14,6 +14,11 @@ class BootState extends Phaser.State {
         this.startState = startState || (this.game.config.enableDebug ? "Game" : "Menu");
         
         this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+        
+        this.game.state.add('Boot', BootState, false);
+        this.game.state.add('Splash', SplashState, false);
+        this.game.state.add('Menu', MenuState, false);
+        this.game.state.add('Game', GameState, false);
     }
 
     preload() {
