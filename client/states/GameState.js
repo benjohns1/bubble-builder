@@ -3,8 +3,8 @@ class GameState extends Phaser.State {
     constructor() {
         super();
         this.freeBuild = false;
-        this.width = 5000;
-        this.height = 5000;
+        this.width = 10000;
+        this.height = 10000;
         this.grid = [];
         this.floaters = {};
         this.structures = {
@@ -146,6 +146,8 @@ class GameState extends Phaser.State {
         // Dynamic submenu
         this.subMenu = this.prefabFactory("UI_Popup", "gameSubmenu", 0, 0, this.assetData.ui.menu);
 
+        this.nextAutosaveTime = this.game.time.now + this.autosaveTimer;
+
         // If last savegame exists, load it
         if (!localStorage.getItem('newGameOnLoad')) {
             try {
@@ -157,8 +159,6 @@ class GameState extends Phaser.State {
                 this.notify.error("Could not load previously saved game: " + err.message);
             }
         }
-
-        this.nextAutosaveTime = this.game.time.now + this.autosaveTimer;
     }
 
     generateGrid(defaultTileState = {}) {
@@ -459,6 +459,7 @@ class GameState extends Phaser.State {
             Floater,
             BuildIcon,
             Structure_Base,
+            Structure_Silo,
             UI_Notifier,
             UI_Popup,
             UI_TextListener,

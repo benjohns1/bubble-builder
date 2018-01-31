@@ -95,5 +95,93 @@
                 }
             }
         }
+    },
+    "silo": {
+        "prefabType": "Structure_Silo",
+        "properties": {
+            "color": "#f46541",
+            "title": "Storage Silo",
+            "lcTitle": "storage silo",
+            "desc": "Mass resource storage",
+            "width": 50,
+            "height": 50,
+            "buildCost": {
+                "energy": 10000,
+                "green": 10000,
+                "red": 5000,
+                "purple": 1000
+            },
+            "initialResources": {
+                "energy": 0
+            },
+            "resourceLimits": {
+                "energy": [0,100000],
+                "green": [0,100000],
+                "red": [0,100000],
+                "purple": [0,100000]
+            },
+            "displayData": {
+                "title": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "property": [ "displayTitle" ]
+                    }
+                },
+                "desc": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "property": [ "properties", "desc" ]
+                    }
+                },
+                "structureManager": {
+                    "prefabType": "UI_StructureManager",
+                    "properties": {
+                        "property": []
+                    }
+                },
+                "energy": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "displayRatio", "energy" ],
+                        "label": "Energy: "
+                    }
+                },
+                "green": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "displayRatio", "green" ],
+                        "label": "Green: "
+                    }
+                },
+                "red": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "displayRatio", "red" ],
+                        "label": "Red: "
+                    }
+                },
+                "purple": {
+                    "prefabType": "UI_TextListener",
+                    "properties": {
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources", "displayRatio", "purple" ],
+                        "label": "Purple: "
+                    }
+                },
+                "resourceTrader": {
+                    "prefabType": "UI_ResourceTrader",
+                    "properties": {
+                        "elementPadding": {
+                            "x": 10
+                        },
+                        "signal": [ "resources", "onChange" ],
+                        "property": [ "resources" ]
+                    }
+                }
+            }
+        }
     }
 }

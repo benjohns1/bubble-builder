@@ -74,6 +74,60 @@
             }
         },
         "bottomRight": {
+            "buildSilo": {
+                "prefabType": "BuildIcon",
+                "properties": {
+                    "structureName": "silo",
+                    "displayData": {
+                        "title": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "title" ]
+                            }
+                        },
+                        "desc": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "desc" ]
+                            }
+                        },
+                        "build": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "label": "\nBuild Requirements:"
+                            }
+                        },
+                        "energy": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "energy" ],
+                                "label": "Energy: "
+                            }
+                        },
+                        "green": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "green" ],
+                                "label": "Green: "
+                            }
+                        },
+                        "red": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "red" ],
+                                "label": "Red: "
+                            }
+                        },
+                        "purple": {
+                            "prefabType": "UI_TextListener",
+                            "properties": {
+                                "property": [ "buildStructureData", "properties", "buildCost", "purple" ],
+                                "label": "Purple: "
+                            }
+                        }
+                    }
+                }
+            },
             "buildBase": {
                 "prefabType": "BuildIcon",
                 "properties": {
