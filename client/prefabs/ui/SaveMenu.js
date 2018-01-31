@@ -20,11 +20,10 @@ class UI_SaveMenu extends Prefab {
 
             // Create save button for each existing save
             let saveKeys = this.gameState.getSaveGameKeys();
-            saveKeys.reverse();
             if (saveKeys) {
                 for (let idx in saveKeys) {
                     let save = saveKeys[idx];
-                    if (!save) {
+                    if (!save || idx === "autosave") {
                         continue;
                     }
                     let btnSave = this.gameState.uiFactory.textButton.create(save.title ? save.title : "Untitled Save", () => {
@@ -42,9 +41,8 @@ class UI_SaveMenu extends Prefab {
             currentY += 20;
             
             // New save button
-            const newSaveTitle = "Save Game " + saveKeys.length;
             const btnNewSave = this.gameState.uiFactory.textButton.create("New Save", () => {
-                if (this.gameState.saveGame(undefined, newSaveTitle)) {
+                if (this.gameState.saveGame()) {
                     this.gameState.subMenu.close();
                 }
             }, this, 0, currentY);

@@ -79,7 +79,7 @@
                                 "subtitle": "Overwriting an existing save cannot be undone",
                                 "subTitleStyle": { "font": "bold 14px Arial", "fill": "#000000" },
                                 "resumeLabel": "Cancel",
-                                "saveDeleteLabel": "Delete Saves",
+                                "saveDeleteLabel": "Delete Save",
                                 "saveDeleteMenu": {
                                     "menu": {
                                         "prefabType": "UI_SaveDeleteMenu",

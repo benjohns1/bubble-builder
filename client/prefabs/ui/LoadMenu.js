@@ -20,9 +20,8 @@ class UI_LoadMenu extends Prefab {
 
             // Create load button for each existing save
             let saveKeys = this.gameState.getSaveGameKeys();
-            saveKeys.reverse();
             let saveCount = 0;
-            if (saveKeys && saveKeys.length > 0) {
+            if (saveKeys) {
                 for (let idx in saveKeys) {
                     let save = saveKeys[idx];
                     if (!save) {

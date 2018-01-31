@@ -12,6 +12,8 @@ class GameState extends Phaser.State {
         };
         this.debug = false;
         this.uiFactory = {};
+        this.autosaveTimer = 180000; // every 3 minutes
+        this.nextAutosaveTime = 0;
 
         // For generating and registering unique keys across game state
         this.keys = {};
@@ -155,6 +157,8 @@ class GameState extends Phaser.State {
                 this.notify.error("Could not load previously saved game: " + err.message);
             }
         }
+
+        this.nextAutosaveTime = this.game.time.now + this.autosaveTimer;
     }
 
     generateGrid(defaultTileState = {}) {
@@ -209,15 +213,24 @@ class GameState extends Phaser.State {
         g.beginFill(0x000000);
     }
 
+    update() {
+        // Autosave
+        if (this.nextAutosaveTime > this.game.time.now) {
+            return;
+        }
+        this.saveGame('autosave', "Autosave", "Game autosaved");
+        this.nextAutosaveTime += this.autosaveTimer;
+    }
+
     getSaveGameKeys() {
         const keyData = localStorage.getItem('saveGameKeys');
         if (!keyData) {
-            return [];
+            return {};
         }
         const keys = JSON.parse(keyData);
         if (!keys) {
             this.notify.error("Error loading save game keys");
-            return [];
+            return {};
         }
         return keys;
     }
@@ -233,9 +246,11 @@ class GameState extends Phaser.State {
             Phaser.Utils.extend(true, keyData[key], newSaveMeta);
         }
         else {
-            key = keyData.length;
+            if (key === undefined || key === null) {
+                key = keyData ? Object.keys(keyData).length : 0;
+            }
             newSaveMeta.key = key;
-            keyData.push(newSaveMeta);
+            keyData[key] = newSaveMeta;
         }
         localStorage.setItem('saveGameKeys', JSON.stringify(keyData));
         return key;
@@ -253,7 +268,7 @@ class GameState extends Phaser.State {
         localStorage.removeItem('save.' + key);
     }
 
-    saveGame(key, title = undefined) {
+    saveGame(key, title = undefined, successMessage = "Game saved") {
         const save = {
             "player": this.player.getState(),
             "grid": this.grid,
@@ -274,6 +289,11 @@ class GameState extends Phaser.State {
 
         try {
             // Save game
+            if (title === undefined) {
+                const now = new Date();
+                title = now.getFullYear() + '-' + (now.getMonth()+1).toString().padStart(2, "00") + '-' + now.getDate().toString().padStart(2, "00") + ' ' + now.getHours() + ':' + now.getMinutes().toString().padStart(2, "00") + ':' + now.getSeconds().toString().padStart(2, "00");
+            }
+
             key = this.setSaveGameKey(key, title);
             localStorage.setItem('save.' + key, JSON.stringify(save));
             localStorage.removeItem('newGameOnLoad');
@@ -283,7 +303,9 @@ class GameState extends Phaser.State {
             return false;
         }
 
-        this.notify.info("Game saved");
+        if (successMessage) {
+            this.notify.info(successMessage);
+        }
         return true;
     }
 

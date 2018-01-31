@@ -5,7 +5,7 @@
             "color": "#4a27b1",
             "title": "Player Base",
             "lcTitle": "player base",
-            "desc": "Provides respawn point and generates 10% yield\n(rounded down) every minute of whatever resources\nare stored, up to maximum capacity.",
+            "desc": "Provides a respawn point and generates 10% resource yield\nevery minute, up to its maximum capacity. Add some resources\nto start generating more automatically!",
             "width": 50,
             "height": 50,
             "updateTimer": 60000,

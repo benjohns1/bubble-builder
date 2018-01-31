@@ -20,7 +20,6 @@ class UI_SaveDeleteMenu extends Prefab {
 
             // Create delete button for each existing save
             let saveKeys = this.gameState.getSaveGameKeys();
-            saveKeys.reverse();
             if (saveKeys) {
                 for (let idx in saveKeys) {
                     let save = saveKeys[idx];
