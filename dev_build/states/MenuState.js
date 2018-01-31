@@ -5,10 +5,12 @@ class MenuState extends Phaser.State {
     }
 
     create() {
-        let locationY = this.world.centerY - 50;
+        const centerY = Math.round(this.camera.bounds.height / 2);
+        const centerX = Math.round(this.camera.bounds.width / 2);
+        let locationY = centerY - 50;
 
         // Title
-        const banner = this.add.text(this.world.centerX, locationY, "Bubble Builder", {
+        const banner = this.add.text(centerX, locationY, "Bubble Builder", {
             fontSize: 40,
             fill: '#4286f4',
             smoothed: false
@@ -23,7 +25,7 @@ class MenuState extends Phaser.State {
         locationY += banner.height + 20;
 
         // Play button
-        const button = this.game.add.button(this.world.centerX, locationY, 'rectangle', function() {
+        const button = this.game.add.button(centerX, locationY, 'rectangle', function() {
             this.state.start('Game', true, false, this.assetData);
         }, this);
         button.anchor.setTo(0.5);
@@ -33,7 +35,7 @@ class MenuState extends Phaser.State {
         locationY += button.height + 15;
 
         // Text
-        const text = this.add.text(this.world.centerX, locationY, "WASD keys to move (hold SHIFT for slow move)\nESC for game menu\n\nCollect enough resources to build a base!", textStyle);
+        const text = this.add.text(centerX, locationY, "WASD keys to move (hold SHIFT for slow move)\nESC for game menu\n\nCollect enough resources to build a base!", textStyle);
         text.anchor.setTo(0.5, 0);
     }
 }
