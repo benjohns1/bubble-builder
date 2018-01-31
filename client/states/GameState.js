@@ -395,7 +395,7 @@ class GameState extends Phaser.State {
 
     restart() {
         localStorage.setItem('newGameOnLoad', true);
-        this.state.start('Boot');
+        this.state.start('Boot', true, false, undefined, 'Game');
     }
     
     respawn(loc = undefined) {
