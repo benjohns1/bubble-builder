@@ -27,7 +27,7 @@ class UI_SaveMenu extends Prefab {
                     if (!save) {
                         continue;
                     }
-                    let btnSave = this.gameState.uiFactory.textButton.create(save.title, () => {
+                    let btnSave = this.gameState.uiFactory.textButton.create(save.title ? save.title : "Untitled Save", () => {
                         this.gameState.saveGame(save.key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);

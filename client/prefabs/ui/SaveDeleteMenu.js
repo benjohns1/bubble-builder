@@ -27,7 +27,7 @@ class UI_SaveDeleteMenu extends Prefab {
                     if (!save) {
                         continue;
                     }
-                    let btnDelete = this.gameState.uiFactory.textButton.create(save.title, () => {
+                    let btnDelete = this.gameState.uiFactory.textButton.create(save.title ? save.title : "Untitled Save", () => {
                         this.gameState.deleteSave(save.key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);

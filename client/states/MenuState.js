@@ -1,9 +1,16 @@
 class MenuState extends Phaser.State {
 
+    init(assetData) {
+        this.assetData = assetData;
+    }
+
     create() {
-        const banner = this.add.text(this.world.centerX, this.world.centerY - 50, "Game Menu", {
+        let locationY = this.world.centerY - 50;
+
+        // Title
+        const banner = this.add.text(this.world.centerX, locationY, "Bubble Builder", {
             fontSize: 40,
-            fill: '#ffffff',
+            fill: '#4286f4',
             smoothed: false
         });
         banner.anchor.setTo(0.5);
@@ -13,13 +20,20 @@ class MenuState extends Phaser.State {
             align: 'center',
             smoothed: false,
         };
+        locationY += banner.height + 20;
 
-        const sprite = this.game.add.button(this.world.centerX, this.world.centerY + 20, 'rectangle', function() {
-            this.state.start('Game');
+        // Play button
+        const button = this.game.add.button(this.world.centerX, locationY, 'rectangle', function() {
+            this.state.start('Game', true, false, this.assetData);
         }, this);
-        sprite.anchor.setTo(0.5);
-        const buttonText = this.game.add.text(0, 3, "Play", textStyle);
+        button.anchor.setTo(0.5);
+        const buttonText = this.game.add.text(0, 3, "Play Now", textStyle);
         buttonText.anchor.setTo(0.5);
-        sprite.addChild(buttonText);
+        button.addChild(buttonText);
+        locationY += button.height + 15;
+
+        // Text
+        const text = this.add.text(this.world.centerX, locationY, "WASD keys to move (hold SHIFT for slow move)\nESC for game menu\n\nCollect enough resources to build a base!", textStyle);
+        text.anchor.setTo(0.5, 0);
     }
 }

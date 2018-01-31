@@ -29,7 +29,7 @@ class UI_LoadMenu extends Prefab {
                         continue;
                     }
                     saveCount++;
-                    let btnLoad = this.gameState.uiFactory.textButton.create(save.title, () => {
+                    let btnLoad = this.gameState.uiFactory.textButton.create(save.title ? save.title : "Untitled Save", () => {
                         this.gameState.loadGame(save.key);
                         this.gameState.subMenu.close();
                     }, this, 0, currentY);
