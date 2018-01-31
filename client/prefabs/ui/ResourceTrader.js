@@ -7,6 +7,7 @@ class UI_ResourceTrader extends Prefab {
         this.source = this.properties.context;
         this.player = this.gameState.player;
         this.currentResource = "energy";
+        this.autoUpdate = this.properties.hasOwnProperty("autoUpdate") ? this.properties.autoUpdate : false;
 
         // Set property defaults
         this.elementPadding = this.properties.elementPadding || { "x": 0 };
@@ -62,7 +63,7 @@ class UI_ResourceTrader extends Prefab {
     }
 
     resourcesUpdated() {
-        if (!this.currentResource || !this.player.resources) {
+        if (!this.autoUpdate || !this.currentResource || !this.player.resources) {
             return;
         }
         const takeAmountValue = this.source.resources[this.currentResource];

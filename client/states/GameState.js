@@ -377,9 +377,9 @@ class GameState extends Phaser.State {
                 this.structures[i][structure.id] = structure;
             }
         }
-
+        
         // Load player
-        this.player = Prefab.loadFromState(this, load.player, playerId);
+        this.player = Prefab.loadFromState(this, load.player, load.player.id);
         this.game.camera.follow(this.player);
 
         // Reset HUD and UI

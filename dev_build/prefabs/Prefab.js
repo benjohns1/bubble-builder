@@ -72,7 +72,8 @@ class Prefab extends Phaser.Sprite {
                 "name": this.name,
                 "x": this.x,
                 "y": this.y,
-                "properties": {}
+                "properties": {},
+                "id": this.id
             },
             "fields": {}
         };

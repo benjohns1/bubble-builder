@@ -90,7 +90,8 @@
                             "x": 10
                         },
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources" ]
+                        "property": [ "resources" ],
+                        "autoUpdate": false
                     }
                 }
             }
@@ -144,7 +145,7 @@
                     "properties": {
                         "signal": [ "resources", "onChange" ],
                         "property": [ "resources", "displayRatio", "energy" ],
-                        "label": "Energy: "
+                        "label": "\nEnergy: "
                     }
                 },
                 "green": {
@@ -178,7 +179,8 @@
                             "x": 10
                         },
                         "signal": [ "resources", "onChange" ],
-                        "property": [ "resources" ]
+                        "property": [ "resources" ],
+                        "autoUpdate": false
                     }
                 }
             }
