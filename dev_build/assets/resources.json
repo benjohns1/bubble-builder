@@ -16,7 +16,7 @@
         "prefabType": "Floater",
         "count": 150,
         "properties": {
-            "radiusSpread": [15, 30],
+            "radiusSpread": [20, 45],
             "color": "#a82f39",
             "resourceSpread": {
                 "energy": [20,30],
@@ -28,7 +28,7 @@
         "prefabType": "Floater",
         "count": 20,
         "properties": {
-            "radiusSpread": [40, 60],
+            "radiusSpread": [45, 60],
             "color": "#7b2fa8",
             "resourceSpread": {
                 "energy": [40,100],
@@ -40,7 +40,7 @@
         "prefabType": "Floater",
         "count": 5,
         "properties": {
-            "radiusSpread": [50, 70],
+            "radiusSpread": [70, 100],
             "color": "#ffffff",
             "resourceSpread": {
                 "energy": [500,2000],
