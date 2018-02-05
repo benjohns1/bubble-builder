@@ -329,6 +329,8 @@ class GameState extends Phaser.State {
             // If no key specified, load the last one
             key = this.getLatestSaveKey();
         }
+
+        let loadError = false;
         
         const loadData = localStorage.getItem('save.' + key);
         if (!loadData) {
@@ -373,7 +375,13 @@ class GameState extends Phaser.State {
         this.structures = {};
         Phaser.Utils.extend(true, this.structures, this.structuresDefault);
         for (let i in load.structures) {
-            Prefab.loadFromState(this, load.structures[i], i);
+            try {
+                Prefab.loadFromState(this, load.structures[i], i);
+            }
+            catch (err) {
+                console.error("Error loading structure: " + err.message);
+                loadError = true;
+            }
         }
         
         // Load player
@@ -387,7 +395,12 @@ class GameState extends Phaser.State {
         this.subMenu.close();
         this.hud.setup();
         
-        this.notify.info("Game loaded");
+        if (loadError) {
+            this.notify.error("Game loaded, but a problem was encountered\nNot all game data may have loaded correctly");
+        }
+        else {
+            this.notify.info("Game loaded");
+        }
         return true;
     }
 
