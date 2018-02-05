@@ -7,9 +7,12 @@ class GameState extends Phaser.State {
         this.height = 10000;
         this.grid = [];
         this.floaters = {};
-        this.structures = {
+        this.structuresDefault = {
+            "all": {},
             "bases": {}
         };
+        this.structures = {};
+        Phaser.Utils.extend(true, this.structures, this.structuresDefault);
         this.debug = false;
         this.uiFactory = {};
         this.autosaveTimer = 180000; // every 3 minutes
@@ -279,12 +282,10 @@ class GameState extends Phaser.State {
             let floater = this.floaters[i].getState();
             save.floaters[i] = floater;
         }
-        for (let i in this.structures) {
-            save.structures[i] = {};
-            for (let j in this.structures[i]) {
-                let structure = this.structures[i][j].getState();
-                save.structures[i][j] = structure;
-            }
+        
+        save.structures = {};
+        for (let i in this.structures.all) {
+            save.structures[i] = this.structures.all[i].getState();
         }
 
         try {
@@ -370,12 +371,9 @@ class GameState extends Phaser.State {
 
         // Load structures
         this.structures = {};
+        Phaser.Utils.extend(true, this.structures, this.structuresDefault);
         for (let i in load.structures) {
-            this.structures[i] = {};
-            for (let j in load.structures[i]) {
-                let structure = Prefab.loadFromState(this, load.structures[i][j], j);
-                this.structures[i][structure.id] = structure;
-            }
+            Prefab.loadFromState(this, load.structures[i], i);
         }
         
         // Load player
@@ -478,6 +476,9 @@ class GameState extends Phaser.State {
         const prefab = new prefabs[prefabType](this, name, x, y, properties, id);
 
         // Maintain game references for particular prefab types
+        if (prefabType.startsWith("Structure_")) {
+            this.structures.all[prefab.id] = prefab;
+        }
         switch (prefabType) {
             case "Floater":
                 this.floaters[prefab.id] = prefab;
@@ -503,6 +504,11 @@ class GameState extends Phaser.State {
 
     removePrefab(prefabType, id) {
         // Maintain game references for particular prefab types
+        if (prefabType.startsWith("Structure_")) {
+            let structure = this.structures.all[id];
+            delete this.structures.all[id];
+            structure.destroy();
+        }
         switch (prefabType) {
             case "Floater":
                 this.removeFloater(id);
@@ -510,7 +516,9 @@ class GameState extends Phaser.State {
             case "Structure_Base":
                 let structure = this.structures.bases[id];
                 delete this.structures.bases[id];
-                structure.destroy();
+                if (structure) {
+                    structure.destroy();
+                }
                 break;
         }
     }
